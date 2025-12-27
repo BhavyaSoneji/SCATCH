@@ -4,13 +4,19 @@ const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
+const ownersRouter = require('./routes/ownersRouter')
+const usersRouter = require('./routes/usersRouter')
+const productsRouter = require('./routes/productsRouter')
+
+const db = require('./config/monggose-connection');
+
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'public')));
 
-app.get('/',(req,resp)=>{
-    resp.send("He y there");
-});
+app.use('/owners',ownersRouter);
+app.use('/products',productsRouter);
+app.use('/users',usersRouter);
 
 app.listen(3000);
