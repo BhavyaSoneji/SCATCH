@@ -19,18 +19,12 @@ const userSchema = mongoose.Schema({
     },
     cart:{
         type:String,
-        default:[],
-        require:true
-    },
-    isAdmin:{
-        type:String,
-        default:[],
-        require:true
+        default:"",
     },
     profilePic:{
         type:String,
-        require:true
-    },
+        default:""
+    }
 });
 
 module.exports = mongoose.model('users',userSchema); 

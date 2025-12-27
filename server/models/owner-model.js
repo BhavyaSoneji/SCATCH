@@ -3,24 +3,24 @@ const mongoose = require('mongoose');
 const ownerSchema = mongoose.Schema({
     fullName:{
         type:String,
-        require:true
+        require:true,
+        default:""
     },
     email:{
         type:String,
-        require:true
+        require:true,
+        default:""
     },
     password:{
         type:String,
-        require:true
+        require:true,
+        default:""
     },
     products:{
         type:String,
-        default:[],
-        require:true
     },
     profilePic:{
         type:String,
-        require:true
     },
     gstin:{
         type:String,
