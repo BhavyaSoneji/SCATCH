@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 
 const isLoggedIn = (req, resp, next) => {
   if (!req.cookies.token) {
-    req.flash("error", "you need to login first");
-    return resp.redirect("/");
+    // req.flash("error", "you need to login first");
+    // return resp.redirect("/");
   }
 
   jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, buff) => {
@@ -18,7 +18,7 @@ const isLoggedIn = (req, resp, next) => {
     } 
     catch (err) {
       req.flash("error", "somethin went wrong");
-      resp.redirect("/");
+      // resp.redirect("/");
     }
   });
 };

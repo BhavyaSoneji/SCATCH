@@ -20,15 +20,14 @@ const productSchema = mongoose.Schema({
     discount:{
         type:Number,
         default:0,
-        require:true
     },
     textColor:{
         type:String,
-        default:[],
+        default:"",
         require:true
     },
     image:{
-        type:String,
+        type:Buffer,
         require:true
     },
 });

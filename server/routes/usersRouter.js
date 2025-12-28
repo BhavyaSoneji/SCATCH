@@ -12,7 +12,7 @@ router.get('/', (req, resp) => {
 
 router.post('/register',isLoggedIn,registerUser);
 
-router.post('/login',isLoggedIn,loginUser);
+router.post('/login',loginUser);
 
 router.get('/logout',isLoggedIn,logoutUser);
 

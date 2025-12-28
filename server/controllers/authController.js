@@ -61,7 +61,7 @@ const loginUser = async(req,resp)=>{
 
 const logoutUser = async(req,resp)=>{
     resp.cookie('token',"");
-    respredirect('/');
+    // resp.redirect('/');
 }
 
 module.exports.registerUser = registerUser;

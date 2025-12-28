@@ -20,7 +20,7 @@ if(process.env.NODE_ENV=='development'){
 }
 
 router.get('/', (req, resp) => {
-    console.log("hey there");
+    resp.render("create product");
     
 });
 

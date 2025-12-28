@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express();
+const cors = require('cors');
 
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -10,6 +11,7 @@ const productsRouter = require('./routes/productsRouter')
 
 const db = require('./config/monggose-connection');
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
