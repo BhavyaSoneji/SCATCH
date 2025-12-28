@@ -4,10 +4,10 @@ import Password from './password'
 const EmailAndPassword = ({data,setData,showPassword,setShowPassword}) => {
   const handleChange = (e)=>{
     const name = e.target.name;
-    const value = e.target.value;
-    setData({...data,[name]:value});
+    setData({...data,[name]:e.target.value});
     console.log(data);
   }
+
   return (
     <div className='space-y-4'>
         <div>

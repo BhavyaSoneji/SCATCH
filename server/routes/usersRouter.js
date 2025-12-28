@@ -10,7 +10,7 @@ router.get('/', (req, resp) => {
     resp.json({ message: 'Hey there users' });
 });   
 
-router.post('/register',isLoggedIn,registerUser);
+router.post('/register',registerUser);
 
 router.post('/login',loginUser);
 

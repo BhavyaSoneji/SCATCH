@@ -5,7 +5,6 @@ const {generateToken} = require('../utils/generateToken')
 const registerUser = async(req,resp)=>{
     try{
             const {email,fullName,password,contact} = req.body;
-
             const registeredUser = await userModel.find({email});
             if(registeredUser.length>0){
                 resp.status(500).json({message:'user already exist..'});
@@ -22,7 +21,7 @@ const registerUser = async(req,resp)=>{
                         });
                         const token = generateToken(createdUser);
                         resp.cookie("token",token);
-                        resp.status(200).json({message:'user created successfully..',createdUser});
+                        resp.status(201).json({status:true,message:'user created successfully..',createdUser});
                     })
                 })
             }
@@ -46,16 +45,16 @@ const loginUser = async(req,resp)=>{
                 if(result){
                     const token = generateToken(user);
                     resp.cookie('token',token);
-                    resp.status(200).send("Login Successfully done..");
+                    resp.status(201).json({status:true,message:"Login Successfully done.."});
                 }
                 else{
-                    resp.status(401).send("Email or Password is incorrect..");
+                    resp.status(500).json({status:false,message:"Email or Password is incorrect.."});
                 }
             })
         }
     }
     catch(err){
-        resp.status(500).send(err.message);
+        resp.status(500).json({status:false,error:err.message});
     }
 }
 

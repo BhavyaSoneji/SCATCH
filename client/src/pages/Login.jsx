@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {LogIn, SquareUserRound, Eye, EyeOff} from "lucide-react"
 import EmailAndPassword from '../components/EmailAndPassword';
-import Button from './Button';
+import Button from '../components/Button';
 import InputBox from '../components/InputBox';
 
 export const Login = () => {
@@ -72,15 +72,15 @@ export const Login = () => {
                     (
                         <form className='space-y-4'>
                             <EmailAndPassword data={data} setData={setData} showPassword={showPassword} setShowPassword={setShowPassword}></EmailAndPassword>
-                            <Button data={data} value={'Login'}></Button>
+                            <Button data={data} setData={setData} value={'Login'}></Button>
                         </form>
                     ) : 
                     (
                         <form className='space-y-4'>
-                            <InputBox setData={setData} data={data} title="Full Name" name="fullname" type="text" placeholder="Enter your full name"></InputBox>
+                            <InputBox setData={setData} data={data} title="Full Name" name="fullName" type="text" placeholder="Enter your full name"></InputBox>
                             <EmailAndPassword data={data} setData={setData} showPassword={showPassword} setShowPassword={setShowPassword}></EmailAndPassword>
                             <InputBox setData={setData} data={data} title="Contact" name="contact" type="number" placeholder="Enter your contact number"></InputBox>
-                            <Button data={data} value={'Sign Up'}></Button>
+                            <Button data={data} setData={setData} value={'Sign Up'}></Button>
                         </form>
                     )
                     }
