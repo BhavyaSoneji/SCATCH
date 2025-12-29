@@ -24,7 +24,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-zinc-50 flex flex-col gap-3 items-center gap-10 rlative items-center">
+    <div className="min-h-screen w-full bg-zinc-50 flex flex-col gap-10 rlative items-center">
       {/* Nav Bar */}
       <div
         className={`z-10 fixed top-5 flex justify-between items-center p-3 px-15 transition-all duration-300 ${
@@ -82,7 +82,7 @@ const Dashboard = () => {
                 className="w-full h-fit object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
-            <div className="flex flex-col gap-3 items-center items-center text-center pt-2">
+            <div className="flex flex-col gap-3 items-center text-center pt-2">
               <h3 className="text-xs uppercase tracking-wider font-medium mb-1">
                 BLACK LEATHER KITTEN HEEL SANDAL
               </h3>
@@ -195,7 +195,7 @@ const Dashboard = () => {
       </div>
 
       {/* new Collection Page */}
-      <div className="relative w-full h-screen overflow-hidden flex items-center bg-gradient-to-br from-[#faf8f5] via-[#fff6ec] to-[#efe4d8]">
+      <div className="relative w-full h-screen overflow-hidden flex items-center bg-linear-to-br from-[#faf8f5] via-[#fff6ec] to-[#efe4d8]">
         {/* Content Container */}
         <div className="max-w-7xl mx-auto w-full px-16 flex items-center justify-between">
           {/* Left Side - Text Content */}
@@ -237,7 +237,7 @@ const Dashboard = () => {
             <div className="relative group">
               <div className="absolute inset-0 bg-linear-to-r from-transparent to-white/20 rounded-full blur-3xl opacity-50"></div>
               <img
-                className="relative w-[600px] h-auto object-contain transform group-hover:scale-105 transition-transform duration-700 ease-out drop-shadow-2xl"
+                className="relative w-150 h-auto object-contain transform group-hover:scale-105 transition-transform duration-700 ease-out drop-shadow-2xl"
                 src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-keepall-bandouliere-50--M26127_PM1_Side%20view.png?wid=1090&hei=1090"
                 alt="New Collection"
               />
@@ -276,7 +276,7 @@ const Dashboard = () => {
           {/* Products Grid */}
           <div className="grid grid-cols-2 gap-6">
             {/* Product Card 1 */}
-            <div className="group cursor-pointer max-w-[240px] mx-auto">
+            <div className="group cursor-pointer max-w-60 mx-auto">
               <div className="bg-white rounded-xl overflow-hidden shadow-md h-56 w-56 flex items-center justify-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-gray-100">
                 <img
                   className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500 p-1"
@@ -293,7 +293,7 @@ const Dashboard = () => {
             </div>
 
             {/* Product Card 2 */}
-            <div className="group cursor-pointer max-w-[240px] mx-auto">
+            <div className="group cursor-pointer max-w-60 mx-auto">
               <div className="bg-white rounded-xl overflow-hidden shadow-md h-56 w-56 flex items-center justify-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-gray-100">
                 <img
                   className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500 p-1"
@@ -310,7 +310,7 @@ const Dashboard = () => {
             </div>
 
             {/* Product Card 3 */}
-            <div className="group cursor-pointer max-w-[240px] mx-auto">
+            <div className="group cursor-pointer max-w-60 mx-auto">
               <div className="bg-white rounded-xl overflow-hidden shadow-md h-56 w-56 flex items-center justify-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-gray-100">
                 <img
                   className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500 p-1"
@@ -327,7 +327,7 @@ const Dashboard = () => {
             </div>
 
             {/* Product Card 4 */}
-            <div className="group cursor-pointer max-w-[240px] mx-auto">
+            <div className="group cursor-pointer max-w-60 mx-auto">
               <div className="bg-white rounded-xl overflow-hidden shadow-md h-56 w-56 flex items-center justify-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-gray-100">
                 <img
                   className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500 p-1"
