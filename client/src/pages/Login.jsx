@@ -13,7 +13,6 @@ export const Login = () => {
     email:"",
     password:""
   })
-
   return (
     <div className='h-screen w-full bg-white p-8'>
         {/* main two parts */}

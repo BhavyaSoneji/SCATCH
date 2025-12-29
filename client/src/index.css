@@ -1,1 +1,4 @@
 @import "tailwindcss";
+.products-container::-webkit-scrollbar{
+    display: none;
+}
