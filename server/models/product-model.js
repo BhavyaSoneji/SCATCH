@@ -13,8 +13,8 @@ const productSchema = mongoose.Schema({
         type:String,
         require:true
     },
-    pannelColor:{
-        type:Number,
+    panelColor:{
+        type:String,
         require:true
     },
     discount:{
@@ -23,7 +23,6 @@ const productSchema = mongoose.Schema({
     },
     textColor:{
         type:String,
-        default:"",
         require:true
     },
     image:{

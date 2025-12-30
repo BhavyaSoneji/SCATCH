@@ -20,7 +20,11 @@ const registerUser = async(req,resp)=>{
                             contact,
                         });
                         const token = generateToken(createdUser);
-                        resp.cookie("token",token);
+                        resp.cookie("token",token, {
+                            httpOnly: true,
+                            secure: false,
+                            sameSite: 'lax'
+                        });
                         resp.status(201).json({status:true,message:'user created successfully..',createdUser});
                     })
                 })
@@ -41,10 +45,17 @@ const loginUser = async(req,resp)=>{
             resp.status(500).send('Email or Password is incorrect..');
         }
         else{
-            bcrypt.compare(password,user.password,(err,result)=>{
+            bcrypt.compare(password,user.password,async (err,result)=>{
                 if(result){
                     const token = generateToken(user);
-                    resp.cookie('token',token);
+                    await resp.cookie('token',token, {
+                        httpOnly: true,
+                        secure: false,
+                        sameSite: 'lax'
+                    });
+                    console.log(token);
+                    console.log("All cookies:", req.cookies);
+                    console.log("Token exists:", req.cookies.token);
                     resp.status(201).json({status:true,message:"Login Successfully done.."});
                 }
                 else{
@@ -60,7 +71,7 @@ const loginUser = async(req,resp)=>{
 
 const logoutUser = async(req,resp)=>{
     resp.cookie('token',"");
-    // resp.redirect('/');
+    resp.status(201).json({status:true, message:"Logout Successfully Done."})
 }
 
 module.exports.registerUser = registerUser;

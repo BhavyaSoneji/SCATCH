@@ -3,6 +3,7 @@ import {LogIn, SquareUserRound, Eye, EyeOff} from "lucide-react"
 import EmailAndPassword from '../components/EmailAndPassword';
 import Button from '../components/Button';
 import InputBox from '../components/InputBox';
+import { useHandleSubmit } from '../utils/handleSubmit';
 
 export const Login = () => {
   const [activeTab, setActiveTab] = useState('login'); // 'login' or 'signup'
@@ -13,6 +14,7 @@ export const Login = () => {
     email:"",
     password:""
   })
+  const handleSubmit = useHandleSubmit();
   return (
     <div className='h-screen w-full bg-white p-8'>
         {/* main two parts */}
@@ -69,17 +71,17 @@ export const Login = () => {
                 <div className='mt-6 w-full max-w-md'>
                     {activeTab === 'login' ? 
                     (
-                        <form className='space-y-4'>
+                        <form className='space-y-4' onSubmit={(e) => handleSubmit(e, data, 'Login')}>
                             <EmailAndPassword data={data} setData={setData} showPassword={showPassword} setShowPassword={setShowPassword}></EmailAndPassword>
-                            <Button data={data} setData={setData} value={'Login'}></Button>
+                            <Button value={'Login'}></Button>
                         </form>
                     ) : 
                     (
-                        <form className='space-y-4'>
+                        <form className='space-y-4' onSubmit={(e) => handleSubmit(e, data, 'Sign Up')}>
                             <InputBox setData={setData} data={data} title="Full Name" name="fullName" type="text" placeholder="Enter your full name"></InputBox>
                             <EmailAndPassword data={data} setData={setData} showPassword={showPassword} setShowPassword={setShowPassword}></EmailAndPassword>
                             <InputBox setData={setData} data={data} title="Contact" name="contact" type="number" placeholder="Enter your contact number"></InputBox>
-                            <Button data={data} setData={setData} value={'Sign Up'}></Button>
+                            <Button value={'Sign Up'}></Button>
                         </form>
                     )
                     }

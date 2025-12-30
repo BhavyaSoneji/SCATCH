@@ -1,9 +1,12 @@
 const jwt = require("jsonwebtoken");
 
 const isLoggedIn = (req, resp, next) => {
+  console.log("=== isLoggedIn Middleware ===");
+  console.log("All cookies:", req.cookies);
+  console.log("Token exists:", !!req.cookies.token);
+  
   if (!req.cookies.token) {
-    // req.flash("error", "you need to login first");
-    // return resp.redirect("/");
+    return resp.status(401).json({ status: false, message: "You need to login first" });
   }
 
   jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, buff) => {

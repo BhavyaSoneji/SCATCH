@@ -2,6 +2,8 @@ import { CircleUserRound, Search } from "lucide-react";
 import { IoBagOutline } from "react-icons/io5";
 import { FaFacebook, FaPinterest } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa6";
+import { useNavigate } from "react-router";
+import ProductCard from "../components/ProductCard";
 
 import React, { useState, useEffect } from "react";
 // import {useNavigate} from "react-router"
@@ -23,6 +25,7 @@ const Dashboard = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen w-full bg-zinc-50 flex flex-col gap-10 rlative items-center">
       {/* Nav Bar */}
@@ -44,7 +47,7 @@ const Dashboard = () => {
         </div>
         <div className="flex gap-7 uppercase tracking-tighter font-medium text-zinc-900">
           <Search className="cursor-pointer" />
-          <CircleUserRound className="cursor-pointer" />
+          <CircleUserRound className="cursor-pointer" onClick={()=>{navigate('/admin/createProduct')}} />
           <IoBagOutline size={25} className="cursor-pointer" />
         </div>
       </div>
@@ -73,124 +76,53 @@ const Dashboard = () => {
 
         {/* Products Grid */}
         <div className="h-full gap-5 w-full flex overflow-x-scroll products-container">
-          {/* Product Card 1 */}
-          <div className="gap-3 cursor-pointer group ">
-            <div className="bg-gray-200 h-80 w-65 aspect-square flex items-end justify-center overflow-hidden">
-              <img
-                src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-                alt="Product"
-                className="w-full h-fit object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="flex flex-col gap-3 items-center text-center pt-2">
-              <h3 className="text-xs uppercase tracking-wider font-medium mb-1">
-                BLACK LEATHER KITTEN HEEL SANDAL
-              </h3>
-              <p className="text-sm">$230</p>
-            </div>
-          </div>
-
-          {/* Product Card 1 */}
-          <div className="gap-3 cursor-pointer group ">
-            <div className="bg-gray-200 h-80 w-65 aspect-square flex items-end justify-center overflow-hidden">
-              <img
-                src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-                alt="Product"
-                className="w-full h-fit object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="flex flex-col items-center text-center pt-2">
-              <h3 className="text-xs uppercase tracking-wider font-medium mb-1">
-                BLACK LEATHER KITTEN HEEL SANDAL
-              </h3>
-              <p className="text-sm">$230</p>
-            </div>
-          </div>
-
-          {/* Product Card 1 */}
-          <div className="gap-3 cursor-pointer group ">
-            <div className="bg-gray-200 h-80 w-65 aspect-square flex items-end justify-center overflow-hidden">
-              <img
-                src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-                alt="Product"
-                className="w-full h-fit object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="flex flex-col items-center text-center pt-2">
-              <h3 className="text-xs uppercase tracking-wider font-medium mb-1">
-                BLACK LEATHER KITTEN HEEL SANDAL
-              </h3>
-              <p className="text-sm">$230</p>
-            </div>
-          </div>
-
-          {/* Product Card 1 */}
-          <div className="gap-3 cursor-pointer group ">
-            <div className="bg-gray-200 h-80 w-65 aspect-square flex items-end justify-center overflow-hidden">
-              <img
-                src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-                alt="Product"
-                className="w-full h-fit object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="flex flex-col items-center text-center pt-2">
-              <h3 className="text-xs uppercase tracking-wider font-medium mb-1">
-                BLACK LEATHER KITTEN HEEL SANDAL
-              </h3>
-              <p className="text-sm">$230</p>
-            </div>
-          </div>
-
-          {/* Product Card 1 */}
-          <div className="gap-3 cursor-pointer group ">
-            <div className="bg-gray-200 h-80 w-65 aspect-square flex items-end justify-center overflow-hidden">
-              <img
-                src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-                alt="Product"
-                className="w-full h-fit object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="flex flex-col items-center text-center pt-2">
-              <h3 className="text-xs uppercase tracking-wider font-medium mb-1">
-                BLACK LEATHER KITTEN HEEL SANDAL
-              </h3>
-              <p className="text-sm">$230</p>
-            </div>
-          </div>
-
-          {/* Product Card 1 */}
-          <div className="gap-3 cursor-pointer group ">
-            <div className="bg-gray-200 h-80 w-65 aspect-square flex items-end justify-center overflow-hidden">
-              <img
-                src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-                alt="Product"
-                className="w-full h-fit object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="flex flex-col items-center text-center pt-2">
-              <h3 className="text-xs uppercase tracking-wider font-medium mb-1">
-                BLACK LEATHER KITTEN HEEL SANDAL
-              </h3>
-              <p className="text-sm">$230</p>
-            </div>
-          </div>
-
-          {/* Product Card 1 */}
-          <div className="gap-3 cursor-pointer group ">
-            <div className="bg-gray-200 h-80 w-65 aspect-square flex items-end justify-center overflow-hidden">
-              <img
-                src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-                alt="Product"
-                className="w-full h-fit object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="flex flex-col items-center text-center pt-2">
-              <h3 className="text-xs uppercase tracking-wider font-medium mb-1">
-                BLACK LEATHER KITTEN HEEL SANDAL
-              </h3>
-              <p className="text-sm">$230</p>
-            </div>
-          </div>
+          <ProductCard 
+            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
+            name="BLACK LEATHER KITTEN HEEL SANDAL"
+            price={230}
+            discount={180}
+            showSale={true}
+          />
+          
+          <ProductCard 
+            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
+            name="LUXURY EVENING CLUTCH"
+            price={320}
+          />
+          
+          <ProductCard 
+            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
+            name="PREMIUM LEATHER TOTE"
+            price={450}
+          />
+          
+          <ProductCard 
+            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
+            name="VINTAGE CROSSBODY BAG"
+            price={280}
+            discount={220}
+            showSale={true}
+          />
+          
+          <ProductCard 
+            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
+            name="DESIGNER SHOULDER BAG"
+            price={390}
+          />
+          
+          <ProductCard 
+            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
+            name="CLASSIC HANDBAG COLLECTION"
+            price={510}
+          />
+          
+          <ProductCard 
+            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
+            name="MINIMALIST LEATHER POUCH"
+            price={200}
+            discount={150}
+            showSale={true}
+          />
         </div>
       </div>
 
@@ -199,7 +131,7 @@ const Dashboard = () => {
         {/* Content Container */}
         <div className="max-w-7xl mx-auto w-full px-16 flex items-center justify-between">
           {/* Left Side - Text Content */}
-          <div className="flex flex-col gap-6 max-w-md">
+          <div className="flex flex-col gap-6 max-w-md z-8">
             <div className="space-y-4">
               <p className="text-sm uppercase tracking-[0.3em] text-zinc-500 font-light">
                 New Arrivals
@@ -238,7 +170,7 @@ const Dashboard = () => {
               <div className="absolute inset-0 bg-linear-to-r from-transparent to-white/20 rounded-full blur-3xl opacity-50"></div>
               <img
                 className="relative w-150 h-auto object-contain transform group-hover:scale-105 transition-transform duration-700 ease-out drop-shadow-2xl"
-                src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-keepall-bandouliere-50--M26127_PM1_Side%20view.png?wid=1090&hei=1090"
+                src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-keepall-cargo-50--M14735_PM1_Worn%20view.png?wid=1090&hei=1090"
                 alt="New Collection"
               />
             </div>

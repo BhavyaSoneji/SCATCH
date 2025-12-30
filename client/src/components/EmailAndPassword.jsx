@@ -31,7 +31,7 @@ const EmailAndPassword = ({data,setData,showPassword,setShowPassword}) => {
                   placeholder='Create a password'
                   className='w-full px-4 py-2 pr-10 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black'
                   required
-                  minLength={8}
+                  minLength={6}
                   value = {data.Password}
                   onChange={(e)=>{handleChange(e)}}
               />

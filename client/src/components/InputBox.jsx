@@ -14,10 +14,10 @@ const InputBox = ({data,setData,title,name,type,placeholder}) => {
             name={name} 
             type={type} 
             placeholder={placeholder}
-            className='w-full px-4 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black'
-            required  
-            value = {data.name}
+            className='h-10 w-full px-4 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black'
+            value = {data[name]}
             onChange={(e)=>{handleChange(e)}}
+            required  
         />
     </div>
   )
