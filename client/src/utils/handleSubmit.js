@@ -1,7 +1,11 @@
 import {useNavigate} from 'react-router';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 export const useHandleSubmit = () => {
+
+    const { loginSuccess, logoutSuccess } = useAuth();
+
     const navigate = useNavigate();
     const handleSubmit = async (e, data, value) => {
         e.preventDefault();
@@ -10,15 +14,22 @@ export const useHandleSubmit = () => {
         .post("http://localhost:3000/users/login", data, {
           withCredentials: true
         })
-        .then((resp) => {
+        .then(async (resp) => {
+          console.log(resp);
           if (resp.data.status)
             {
+              await loginSuccess();
               console.log(resp.data.message);
-              navigate('/Dashboard');
+              navigate('/dashboard');
             } 
+            else{
+              console.log(resp.data.message);
+              navigate('/');
+            }
         })
         .catch((err) => {
           console.log(err.response?.data?.message || err);
+          navigate('/')
         });
     } 
     else if (value.toLowerCase() == "Sign Up".toLowerCase()) {
@@ -27,6 +38,7 @@ export const useHandleSubmit = () => {
           withCredentials: true
         })
         .then((resp) => {
+          console.log(resp);
           if (resp.data.status) console.log(resp.data.message);
         })
         .catch((err) => {
@@ -43,8 +55,9 @@ export const useHandleSubmit = () => {
         })
         .then((resp) => {
             if(resp.data.status){
+                console.log(resp);
                 console.log(resp?.data?.message || "Product Created Sccessfully..");
-                navigate('/admin/showallproucts');
+                navigate('/shop');
             }
             else{
                 console.log(resp?.data?.message || "Error Creating Product..");
@@ -59,9 +72,11 @@ export const useHandleSubmit = () => {
       axios.get('http://localhost:3000/users/logout',{
         withCredentials:true
       })
-      .then((resp)=>{
+      .then(async(resp)=>{
+        console.log(resp);
         if(resp.data.status){
           console.log(resp.data?.message||resp);
+          await logoutSuccess();
           navigate('/')
         }else{
           console.log("Logout Failed");

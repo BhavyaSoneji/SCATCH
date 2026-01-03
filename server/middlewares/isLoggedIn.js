@@ -1,18 +1,14 @@
 const jwt = require("jsonwebtoken");
 
 const isLoggedIn = (req, resp, next) => {
-  console.log("=== isLoggedIn Middleware ===");
-  console.log("All cookies:", req.cookies);
-  console.log("Token exists:", !!req.cookies.token);
-  
   if (!req.cookies.token) {
-    return resp.status(401).json({ status: false, message: "You need to login first" });
+    return resp.status(401).json({ status: false, message: "You need to login first.."});
   }
 
   jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, buff) => {
     try {
       if (!buff) {
-        return resp.status(500).send("User Not Logined");
+        return resp.status(500).send({status:false,message:"User Not Logined.."});
       }
  
       req.user = buff.email;
@@ -20,7 +16,8 @@ const isLoggedIn = (req, resp, next) => {
       next();
     } 
     catch (err) {
-      req.flash("error", "somethin went wrong");
+      return resp.status(500).send({status:false,message:"Something went wrong.."})
+      // req.flash("error", "somethin went wrong");
       // resp.redirect("/");
     }
   });

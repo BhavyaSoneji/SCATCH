@@ -1,16 +1,25 @@
-import { CircleUserRound, Search } from "lucide-react";
-import { IoBagOutline } from "react-icons/io5";
 import { FaFacebook, FaPinterest } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa6";
-import { useNavigate } from "react-router";
 import ProductCard from "../components/ProductCard";
-
-import React, { useState, useEffect } from "react";
-// import {useNavigate} from "react-router"
+import { useEffect, useState } from "react";
+import { getAllProducts } from "../utils/getAllProducts";
+import { useNavigate } from "react-router";
+import { CircleUserRound, Search } from "lucide-react";
+import { IoBagOutline } from "react-icons/io5";
 
 const Dashboard = () => {
-  // const nevigate = useNavigate();
+  const [productsList, setProductsList] = useState([]);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const get10Products = async ()=>{
+    const tempProductsList = await getAllProducts() || [];
+    console.log(tempProductsList);
+    setProductsList(tempProductsList);
+  }
+
+  useEffect(() => {
+    get10Products();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,8 +33,9 @@ const Dashboard = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+  
   const navigate = useNavigate();
+
   return (
     <div className="min-h-screen w-full bg-zinc-50 flex flex-col gap-10 rlative items-center">
       {/* Nav Bar */}
@@ -36,19 +46,20 @@ const Dashboard = () => {
             : "bg-transparent w-full"
         }`}
       >
+        
         {/* OtherPages */}
         <div className="flex gap-7 uppercase tracking-tighter font-medium text-zinc-900">
-          <a className="cursor-pointer">Shop</a>
-          <a className="cursor-pointer">Collections</a>
-          <a className="cursor-pointer">About</a>
+          <a className="cursor-pointer hover:opacity-60 transition-opacity" onClick={()=>navigate('/shop')}>Shop</a>
+          <a className="cursor-pointer hover:opacity-60 transition-opacity">Collections</a>
+          <a className="cursor-pointer hover:opacity-60 transition-opacity">About</a>
         </div>
         <div>
-          <h1 className="font-bold text-4xl font-serif">Scatch</h1>
+          <h1 className="font-bold text-4xl font-serif cursor-pointer" onClick={()=>navigate('/dashboard')}>Scatch</h1>
         </div>
         <div className="flex gap-7 uppercase tracking-tighter font-medium text-zinc-900">
-          <Search className="cursor-pointer" />
-          <CircleUserRound className="cursor-pointer" onClick={()=>{navigate('/admin/createProduct')}} />
-          <IoBagOutline size={25} className="cursor-pointer" />
+          <Search className="cursor-pointer hover:opacity-60 transition-opacity" />
+          <CircleUserRound className="cursor-pointer hover:opacity-60 transition-opacity" onClick={()=>{navigate('/admin/createProduct')}} />
+          <IoBagOutline size={25} className="cursor-pointer hover:opacity-60 transition-opacity" onClick={()=>{navigate('/cart')}} />
         </div>
       </div>
 
@@ -76,53 +87,23 @@ const Dashboard = () => {
 
         {/* Products Grid */}
         <div className="h-full gap-5 w-full flex overflow-x-scroll products-container">
-          <ProductCard 
-            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-            name="BLACK LEATHER KITTEN HEEL SANDAL"
-            price={230}
-            discount={180}
-            showSale={true}
-          />
-          
-          <ProductCard 
-            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-            name="LUXURY EVENING CLUTCH"
-            price={320}
-          />
-          
-          <ProductCard 
-            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-            name="PREMIUM LEATHER TOTE"
-            price={450}
-          />
-          
-          <ProductCard 
-            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-            name="VINTAGE CROSSBODY BAG"
-            price={280}
-            discount={220}
-            showSale={true}
-          />
-          
-          <ProductCard 
-            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-            name="DESIGNER SHOULDER BAG"
-            price={390}
-          />
-          
-          <ProductCard 
-            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-            name="CLASSIC HANDBAG COLLECTION"
-            price={510}
-          />
-          
-          <ProductCard 
-            image="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-side-trunk-silhouette--M27222_PM2_Front%20view.png?wid=1090&hei=1090"
-            name="MINIMALIST LEATHER POUCH"
-            price={200}
-            discount={150}
-            showSale={true}
-          />
+          {productsList.map((product,index)=>{
+            if(index<=7){
+              return (
+                <ProductCard
+                  image={product.image}
+                  name={product.name}
+                  price={product.price}
+                  discount={product.discount}
+                  showSale={
+                    product.discount > 0 && product.discount < product.price
+                  }
+                  key={product._id}
+                />
+              )
+            }
+            }
+          )}
         </div>
       </div>
 
@@ -402,20 +383,23 @@ const Dashboard = () => {
           <a href="#">new arrivals</a>
           <a href="#">Collections</a>
         </div>
-        
+
         {/* Part-4 */}
         <div className="w-full flex flex-col gap-6">
           <div>
-            <h2 className="text-2xl font-serif italic mb-3">Sign up for Scatch updates</h2>
+            <h2 className="text-2xl font-serif italic mb-3">
+              Sign up for Scatch updates
+            </h2>
             <p className="text-sm text-zinc-600 leading-relaxed">
-              Stay updated on our latest collections, exclusive offers,<br/>
+              Stay updated on our latest collections, exclusive offers,
+              <br />
               and brand news
             </p>
           </div>
-          
+
           <div className="flex">
-            <input 
-              type="email" 
+            <input
+              type="email"
               placeholder="E-mail address"
               className="flex-1 px-4 py-3 border-b-2 border-zinc-300 focus:border-zinc-900 outline-none transition-colors placeholder:text-zinc-400 bg-transparent"
             />
@@ -423,9 +407,11 @@ const Dashboard = () => {
               Subscribe
             </button>
           </div>
-          
+
           <p className="text-xs text-zinc-400 leading-relaxed">
-            By entering your email, you agree to receive marketing communications from<br/>
+            By entering your email, you agree to receive marketing
+            communications from
+            <br />
             Scatch and consent to our Terms of Service and Privacy Policy.
           </p>
         </div>

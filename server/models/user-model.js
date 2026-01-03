@@ -17,14 +17,16 @@ const userSchema = mongoose.Schema({
         type:Number,
         require:true
     },
-    cart:{
-        type:String,
-        default:"",
-    },
+    cart:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"products",
+        default:[],
+    }],
     profilePic:{
         type:String,
         default:""
     }
 });
+
 
 module.exports = mongoose.model('users',userSchema); 
