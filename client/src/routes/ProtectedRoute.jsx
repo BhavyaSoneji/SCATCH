@@ -2,9 +2,9 @@ import React from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Navigate } from 'react-router';
 
-const ProtectedRoute = ({children}) => {
+const ProtectedRoute = ({children,allowed}) => {
 
-  const {isLoggedIn,loading} = useAuth();
+  const {isLoggedIn,loading,userType} = useAuth();
 
   console.log(isLoggedIn,loading);
   
@@ -12,8 +12,14 @@ const ProtectedRoute = ({children}) => {
     return <div>Loading...</div>
   }
   if(!isLoggedIn){
-      return <Navigate to="/" replace />
+    return <Navigate to="/" replace />
+  }
+  if(allowed && !allowed.includes(userType)){
+    if(userType==='user'.toLowerCase()){
+      return <Navigate to="/profile" replace />
     }
+    return <Navigate to="/error" replace />
+  }
 
   return (
     children

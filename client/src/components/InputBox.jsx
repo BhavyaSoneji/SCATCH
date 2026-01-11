@@ -5,7 +5,6 @@ const InputBox = ({data,setData,title,name,type,placeholder}) => {
     const name = e.target.name;
     const value = e.target.value;
     setData({...data,[name]:value});
-    console.log(data);
   }
   return (
     <div>

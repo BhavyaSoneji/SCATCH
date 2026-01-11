@@ -1,5 +1,5 @@
 import React from 'react';
-import { addTocart } from '../utils/addToCart';
+import { useCart } from '../context/cartContext';
 
 const ProductCard = ({ 
   id,
@@ -13,8 +13,10 @@ const ProductCard = ({
 
   // const navigate = useNavigate();
 
-  const handleAddToCart = async(id)=>{
-  await addTocart(id);
+  const {addToCart} = useCart();
+
+  const handleAddToCart = (id)=>{
+    addToCart(id)
   }
 
   return (
@@ -27,7 +29,7 @@ const ProductCard = ({
       )}
       
       {/* Product Image */}
-      <div className='h-4/6 bg-zinc-200 flex flex-col justify-end overflow-hidden'>
+      <div className='h-4/6 justify-center bg-zinc-200 flex flex-col overflow-hidden'>
         <img 
           className='hover:scale-105 transition-transform duration-500 ease-out' 
           src={image}
@@ -39,7 +41,7 @@ const ProductCard = ({
       <div className='h-2/6 flex flex-col w-full px-5 py-2 justify-between'>
       
        <div className='flex flex-col gap-2'>
-          <h3 className="text-nowrap overflow-hidden text-xs uppercase tracking-wider font-medium leading-relaxed">
+          <h3 className="line-clamp-1 text-xs uppercase tracking-wider font-medium leading-relaxed">
             {name}
           </h3>
           
@@ -58,7 +60,7 @@ const ProductCard = ({
         
         {/* Add to Bag Button */}
         <button 
-          className=" mb-1 w-full py-2 text-xs uppercase tracking-wider font-medium border border-zinc-900 transition-all duration-300 hover:bg-zinc-900 hover:text-zinc-50"
+          className=" mb-1 w-full text-xs uppercase tracking-wider font-medium shadow-md border-zinc-50 bg-zinc-50 py-3 rounded-md transition-all duration-300 hover:bg-zinc-900 hover:text-zinc-50"
             onClick={()=>{
               handleAddToCart(id);
             }}

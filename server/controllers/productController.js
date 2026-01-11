@@ -12,7 +12,6 @@ const createProduct = async (req, resp) => {
     textColor,
     panelColor,
   });
-  // const flash = resp.flash("Success","Product Created Successfully");
   resp
     .status(201)
     .send({

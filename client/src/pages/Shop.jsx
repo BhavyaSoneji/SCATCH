@@ -69,7 +69,7 @@ const Shop = () => {
     // Sale filter
     if (onSaleOnly) {
       filtered = filtered.filter((product) => {
-        product.discount > 0 && product.discount < product.price;
+        return product.discount > 0 && product.discount < product.price;
       });
     }
 
@@ -134,7 +134,7 @@ const Shop = () => {
                 type="text"
                 placeholder="Search products..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) =>  setSearchQuery(e.target.value)}
                 className="w-full pl-11 pr-4 py-2.5 bg-white border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition-all"
               />
             </div>
@@ -251,7 +251,7 @@ const Shop = () => {
                   <input
                     type="checkbox"
                     checked={onSaleOnly}
-                    onChange={(e) => setOnSaleOnly(e.target.checked)}
+                    onChange={() => setOnSaleOnly(prev=>!prev)}
                     className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
                   />
                   <span className="text-sm font-medium text-zinc-700 group-hover:text-zinc-900 transition-colors">

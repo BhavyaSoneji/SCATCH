@@ -8,6 +8,7 @@ import Shop from "./pages/Shop";
 import Cart from "./pages/Cart";
 import Error from "./pages/Error";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -16,7 +17,7 @@ const App = () => {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowed={['owner','user']}>
             <Dashboard />
           </ProtectedRoute>
         }
@@ -24,23 +25,32 @@ const App = () => {
       <Route
         path="/shop"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowed={['owner','user']}>
             <Shop />
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/cart"
         element={
-          <ProtectedRoute>
-            <Cart />
+          <ProtectedRoute allowed={['user']}>
+              <Cart />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute allowed={['user']}>
+            <Profile />
           </ProtectedRoute>
         }
       />
       <Route
         path="/admin"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowed={['owner']}>
             <AdminPanel />
           </ProtectedRoute>
         }
@@ -48,7 +58,7 @@ const App = () => {
         <Route
           path="createproduct"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowed={['owner']}>
               <CreateProductForm />
             </ProtectedRoute>
           }
@@ -56,7 +66,7 @@ const App = () => {
         <Route
           path="dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowed={['owner']}>
               <CreateProductForm />
             </ProtectedRoute>
           }
@@ -64,7 +74,7 @@ const App = () => {
         <Route
           path="allproducts"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowed={['owner']}>
               <CreateProductForm />
             </ProtectedRoute>
           }
@@ -72,7 +82,7 @@ const App = () => {
         <Route
           path="orders"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowed={['owner']}>
               <CreateProductForm />
             </ProtectedRoute>
           }
@@ -80,13 +90,13 @@ const App = () => {
         <Route
           path="users"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowed={['owner']}>
               <CreateProductForm />
             </ProtectedRoute>
           }
         ></Route>
       </Route>
-      <Route path="*" element={<Error />} />
+      <Route path="*" element={<Error />} allowed={['owner','user']}/>
     </Routes>
   );
 };

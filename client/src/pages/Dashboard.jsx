@@ -6,6 +6,7 @@ import { getAllProducts } from "../utils/getAllProducts";
 import { useNavigate } from "react-router";
 import { CircleUserRound, Search } from "lucide-react";
 import { IoBagOutline } from "react-icons/io5";
+import { useAuth } from "../context/AuthContext";
 
 const Dashboard = () => {
   const [productsList, setProductsList] = useState([]);
@@ -17,8 +18,13 @@ const Dashboard = () => {
     setProductsList(tempProductsList);
   }
 
+  const {user} = useAuth()
+
   useEffect(() => {
-    get10Products();
+    const defaultproducts = ()=>{
+      get10Products();
+    }
+    defaultproducts();
   }, []);
 
   useEffect(() => {
@@ -40,7 +46,7 @@ const Dashboard = () => {
     <div className="min-h-screen w-full bg-zinc-50 flex flex-col gap-10 rlative items-center">
       {/* Nav Bar */}
       <div
-        className={`z-10 fixed top-5 flex justify-between items-center p-3 px-15 transition-all duration-300 ${
+        className={` z-10 fixed top-5 flex justify-between items-center p-3 px-15 transition-all duration-300 ${
           isScrolled
             ? "bg-white/40 backdrop-blur-xs shadow-md rounded-full w-9/10"
             : "bg-transparent w-full"
@@ -48,15 +54,15 @@ const Dashboard = () => {
       >
         
         {/* OtherPages */}
-        <div className="flex gap-7 uppercase tracking-tighter font-medium text-zinc-900">
+        <div className="w-1/3 flex gap-7 uppercase tracking-tighter font-medium text-zinc-900">
           <a className="cursor-pointer hover:opacity-60 transition-opacity" onClick={()=>navigate('/shop')}>Shop</a>
           <a className="cursor-pointer hover:opacity-60 transition-opacity">Collections</a>
           <a className="cursor-pointer hover:opacity-60 transition-opacity">About</a>
         </div>
-        <div>
+        <div className="w-1/3 justify-center flex">
           <h1 className="font-bold text-4xl font-serif cursor-pointer" onClick={()=>navigate('/dashboard')}>Scatch</h1>
         </div>
-        <div className="flex gap-7 uppercase tracking-tighter font-medium text-zinc-900">
+        <div className="w-1/3 justify-end flex gap-7 uppercase tracking-tighter font-medium text-zinc-900">
           <Search className="cursor-pointer hover:opacity-60 transition-opacity" />
           <CircleUserRound className="cursor-pointer hover:opacity-60 transition-opacity" onClick={()=>{navigate('/admin/createProduct')}} />
           <IoBagOutline size={25} className="cursor-pointer hover:opacity-60 transition-opacity" onClick={()=>{navigate('/cart')}} />
@@ -79,7 +85,7 @@ const Dashboard = () => {
             <h1 className="text-3xl font-serif tracking-wide">
               Shoe Collection
             </h1>
-            <a className="text-sm uppercase tracking-wider hover:underline cursor-pointer">
+            <a className="text-sm uppercase tracking-wider hover:underline cursor-pointer" onClick={()=>navigate('/shop')}>
               VIEW ALL
             </a>
           </div>
@@ -127,7 +133,7 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <button className="group mt-4 flex items-center gap-3 text-zinc-900 font-medium uppercase tracking-wider text-sm hover:gap-5 transition-all duration-300">
+            <button onClick={()=>navigate('/shop')} className="group mt-4 flex items-center gap-3 text-zinc-900 font-medium uppercase tracking-wider text-sm hover:gap-5 transition-all duration-300">
               Explore Collection
               <svg
                 className="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
@@ -259,7 +265,7 @@ const Dashboard = () => {
 
           {/* Call to Action */}
           <div className="mt-8 text-center">
-            <button className="bg-zinc-900 text-white px-8 py-3 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-zinc-800 transform hover:scale-105 transition-all duration-300 shadow-lg">
+            <button onClick={()=>navigate('/shop')} className="bg-zinc-900 text-white px-8 py-3 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-zinc-800 transform hover:scale-105 transition-all duration-300 shadow-lg">
               Explore Men's Collection
             </button>
           </div>

@@ -7,16 +7,18 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [userType,setUserType] = useState("");
 
   const authVerify = async () => {
     try {
-      const resp = await axios.get("http://localhost:3000/users/verify", {
+      const resp = await axios.get("http://localhost:5000/users/verify", {
         withCredentials: true,
       });
       if(resp.data.status){
         console.log(resp);
         setIsLoggedIn(true);
         setUser(resp.data.user);
+        setUserType(resp.data.userType);
       }
     } catch (error) {
       console.error(error);
@@ -26,6 +28,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+  
   useEffect(() => {
     authVerify();
   }, []);
@@ -40,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, loginSuccess, logoutSuccess, loading }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, loginSuccess, logoutSuccess, loading, userType}}>
       {children}
     </AuthContext.Provider>
   );

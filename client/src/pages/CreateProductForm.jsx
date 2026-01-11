@@ -115,7 +115,7 @@ const CreateProductForm = () => {
         {/* Create Product Button */}
         <div className="w-full flex justify-center">
           <div className="w-1/3">
-            <Button value="Create Product" className="bg-blue-600" />
+            <Button value="Create Product" className="bg-blue-600 hover:bg-blue-700" />
           </div>
         </div>
       </form>

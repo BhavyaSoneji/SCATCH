@@ -1,24 +1,18 @@
-import React, { useState } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router";
-import { useHandleSubmit } from "../utils/handleSubmit";
+import React from "react";
+import { Outlet, useLocation } from "react-router";
+import SideBar from "../components/SideBar";
 import { 
   LayoutDashboard, 
   Package, 
   ShoppingBag, 
   Users, 
   Settings, 
-  LogOut,
-  Menu,
-  X,
   Plus,
   List
 } from "lucide-react";
 
 const AdminPanel = () => {
-  const handleLogout = useHandleSubmit();
-  const navigate = useNavigate();
   const location = useLocation(); // give a object with the details of your current location in the URL or website , it has pathName used to get the current route  
-  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const navigationItems = [
     {
@@ -59,79 +53,7 @@ const AdminPanel = () => {
   return (
     <div className="h-screen w-full flex bg-zinc-50 overflow-hidden">
       {/* Sidebar */}
-      <aside
-        className={`${
-          sidebarOpen ? "w-64" : "w-20"
-        } bg-zinc-900 text-white flex flex-col transition-all duration-300 ease-in-out`}
-      >
-        {/* Logo & Toggle */}
-        <div className="h-20 flex items-center justify-between px-6 border-b border-zinc-800">
-          {sidebarOpen && (
-            <h1 className="text-2xl font-serif tracking-tight">Scatch</h1>
-          )}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
-          >
-            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 px-3 py-6 overflow-y-auto">
-          <div className="space-y-1">
-            {navigationItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.path, item.exact);
-              
-              return (
-                <button
-                  key={item.path}
-                  onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 group ${
-                    active
-                      ? "bg-white text-zinc-900"
-                      : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
-                  }`}
-                >
-                  <Icon size={20} className="shrink-0" />
-                  {sidebarOpen && (
-                    <span className="text-sm font-medium tracking-wide">
-                      {item.name}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </nav>
-
-        {/* Settings & Logout */}
-        <div className="p-3 border-t border-zinc-800 space-y-1">
-          <button
-            className="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-white transition-all duration-200"
-          >
-            <Settings size={20} className="shrink-0" />
-            {sidebarOpen && (
-              <span className="text-sm font-medium tracking-wide">
-                Settings
-              </span>
-            )}
-          </button>
-          
-          <button
-            onClick={(e) => handleLogout(e, {}, "Logout")}
-            className="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-zinc-400 hover:bg-red-600 hover:text-white transition-all duration-200"
-          >
-            <LogOut size={20} className="shrink-0" />
-            {sidebarOpen && (
-              <span className="text-sm font-medium tracking-wide">
-                Logout
-              </span>
-            )}
-          </button>
-        </div>
-      </aside>
+      <SideBar navigationItems={navigationItems} showSettings={true} />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
@@ -162,7 +84,7 @@ const AdminPanel = () => {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto bg-zinc-50 products-container">
+        <div className="flex-1 overflow-y-auto bg-zinc-100 products-container">
           <Outlet />
         </div>
       </main>

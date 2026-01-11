@@ -5,7 +5,6 @@ const EmailAndPassword = ({data,setData,showPassword,setShowPassword}) => {
   const handleChange = (e)=>{
     const name = e.target.name;
     setData({...data,[name]:e.target.value});
-    console.log(data);
   }
 
   return (

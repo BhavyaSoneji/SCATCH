@@ -11,6 +11,7 @@ const productsRouter = require('./routes/productsRouter')
 
 const db = require('./config/monggose-connection');
 
+
 app.use(cors({
     origin:"http://localhost:5173",
     methods:['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -26,4 +27,4 @@ app.use('/owners',ownersRouter);
 app.use('/products',productsRouter);
 app.use('/users',usersRouter);
 
-app.listen(3000);
+app.listen(5000);
