@@ -7,10 +7,13 @@ import { LogOut } from "lucide-react";
 import Details from "../components/Details";
 import Button from "../components/Button";
 import InputBox from "../components/InputBox";
+import notify from "../utils/notifications";
+import { useAuth } from "../context/AuthContext";
+import { Navigate } from "react-router";
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
-  const [userDetails, setUserDetails] = useState("");
+  const [userDetails, setUserDetails] = useState({});
   const [isEditBtn, setIsEditBtn] = useState(false);
   const [isPasswordBtn, setIsPasswordBtn] = useState(false);
   const [previewURL, setPreviewUrl] = useState(null);
@@ -22,6 +25,8 @@ const Profile = () => {
     newPassword: "",
     confirmPassword: "",
   });
+
+  const { loginSuccess } = useAuth();
 
   const fetchedUser = async () => {
     await axios
@@ -45,19 +50,30 @@ const Profile = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      const resp = await axios.post(
-        `http://localhost:5000/users/updateuser/${editForm._id}`,editForm,{
-          withCredentials:true
-        }
-      );
-      if (resp.data.status) {
-        setUserDetails(resp.data.user);
-        setIsEditBtn(false);
-        // Show success message if you have notifications
-      }
+      await axios
+        .post(
+          `http://localhost:5000/users/updateuser/${editForm._id}`,
+          editForm,
+          {
+            withCredentials: true,
+          }
+        )
+        .then(async(resp) => {
+          if (resp.data.status) {
+            setUserDetails(resp.data.updatedUser);
+            notify.success(resp.data.message);
+            loginSuccess();
+            setIsEditBtn(false);
+            // Show success message if you have notifications
+          }
+        })
+        .catch((err) => {
+          notify.error("Error Updating User Deatils..");
+          console.log(err);
+        })
     } catch (err) {
-      console.error(err);
-      // Show error message
+      notify.error("Error Updating User Deatils..");
+      console.log(err);
     }
   };
 
@@ -79,25 +95,27 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setEditForm({...editForm, profilePic: url });
+      setEditForm({ ...editForm, profilePic: url });
       setPreviewUrl(url);
     } else {
       setPreviewUrl(null);
     }
-    console.log(userDetails);
   };
 
   useEffect(() => {
-    if (userDetails) {
-      setEditForm(userDetails);
+    const setEdit = ()=>{
+      if (userDetails) {
+        setEditForm(userDetails);
+      }
     }
+    setEdit();
   }, [userDetails]);
 
   return (
     <div className="relative min-h-screen w-full flex flex-col bg-zinc-50 ">
       <NavBar></NavBar>
       {!loading ? (
-        <div className="absolute top-15 container mx-auto p-10 w-full items-center flex flex-col gap-5">
+        <div className="absolute top-15 mx-auto p-10 w-full items-center flex flex-col gap-5">
           {/* Header */}
           <div className="flex w-full justify-between items-center py-3">
             <h1 className="text-4xl font-serif flex items-center">
@@ -134,6 +152,7 @@ const Profile = () => {
 
             {/* Profile View */}
             {!isEditBtn && !isPasswordBtn && (
+              
               <div>
                 <div className="mb-4 flex justify-between p-2">
                   <h1 className="capitalize text-gray-900 text-3xl font-bold">
@@ -146,7 +165,7 @@ const Profile = () => {
                           ? "https://imgs.search.brave.com/v3K9Ei5XBK7aQW1GB0EAJ9VOSFEZe7Lh_OLnJ47fmXs/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/cG5nYWxsLmNvbS93/cC1jb250ZW50L3Vw/bG9hZHMvNS9Qcm9m/aWxlLUF2YXRhci1Q/TkctRnJlZS1Eb3du/bG9hZC5wbmc"
                           : userDetails.profilePic
                       }
-                      className="h-20 w-20 rounded-full"
+                      className="h-30 w-30 rounded-full"
                       alt="profile Picture"
                     />
                   </div>
@@ -167,7 +186,7 @@ const Profile = () => {
 
             {/* Edit Profile Form */}
             {isEditBtn && (
-              <form onSubmit={handleEditSubmit} className="flex flex-col gap-3">
+              <form onSubmit={(e)=>handleEditSubmit(e)} className="flex flex-col gap-3">
                 <InputBox
                   data={editForm}
                   setData={setEditForm}
@@ -209,7 +228,7 @@ const Profile = () => {
                   </div>
                   <img
                     src={previewURL}
-                    className="h-30 w-30 overflow-hidden object-contain"
+                    className="h-40 w-40 overflow-hidden object-cover"
                     alt="Profile Picture"
                   ></img>
                 </div>
