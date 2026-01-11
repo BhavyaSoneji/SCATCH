@@ -29,8 +29,8 @@ const googleLogin = async (req, resp) => {
         googleId: sub,
         profilePic: picture,
         authProvider: "google",
-        contact:null,
-        address:""
+        contact: null,
+        address: "",
       });
     }
 
@@ -265,24 +265,80 @@ const removeFromCart = async (req, resp) => {
 
 const updateUser = async (req, resp) => {
   const updatedDetails = req.body;
-  try{
+  try {
     const newUser = await userModel.findOneAndUpdate(
-      {_id:updatedDetails._id},
+      { _id: updatedDetails._id },
       updatedDetails,
       {
         new: true,
         runValidator: true,
-    })
-    if(!newUser){
-      resp.status(401).send({status:false,message:"Error Updating User.."})
-    }
-    else{
+      }
+    );
+    if (!newUser) {
+      resp
+        .status(401)
+        .send({ status: false, message: "Error Updating User.." });
+    } else {
       console.log(newUser);
-      resp.status(200).send({status:true,message:"User Updated..",updatedUser:newUser})
+      resp.status(200).send({
+        status: true,
+        message: "User Updated..",
+        updatedUser: newUser,
+      });
     }
-  }catch(err){
-    resp.status(401).send({status:false,message:"Error Updating User.."})
+  } catch (err) {
+    resp.status(401).send({ status: false, message: "Error Updating User.." });
   }
+};
+
+const updatePassword = async (req, resp) =>{
+    const {passwordForm,newPassword} = req.body;
+    const user = await userModel.findOne({_id:req.params.id});
+    if(newPassword){
+      console.log("inside");
+      bcrypt.genSalt(10,(err,salt)=>{
+        if(err){
+          resp.status(401).json({status:false,message:"error during update password.."});
+        }else{
+          bcrypt.hash(passwordForm.confirmPassword,salt,async(err,hash)=>{
+            if(err){
+              resp.status(401).json({status:false,message:"error during update password.."});
+            }else{
+              user['password'] = hash;
+              await user.save();
+              const token = generateToken(user,"user");
+              resp.cookie("token",token);
+              resp.status(200).json({status:true,message:"New Password Created.."});
+            }
+          })
+        }
+      })
+    }else{
+      bcrypt.compare(passwordForm.currentPassword,user.password,(err,result)=>{
+        if(result){
+          bcrypt.genSalt(10,(err,salt)=>{
+            if(err){
+              resp.status(401).json({status:false,message:"error during update password.."});
+            }else{
+              bcrypt.hash(passwordForm.confirmPassword,salt,async(err,hash)=>{
+                if(err){
+                  resp.status(401).json({status:false,message:"error during update password.."});
+                }else{
+                  user.passwrod = hash;
+                  await user.save();
+                  const token = generateToken(user,"user");
+                  resp.cookie("token",token);
+                  resp.status(200).json({status:true,message:"Password Updated Successfully.."});
+                }
+              })
+            }
+          })
+        }
+        // else{
+
+        // }
+      })
+    }
 };
 
 module.exports.registerUser = registerUser;
@@ -294,3 +350,4 @@ module.exports.fetchUserWithCart = fetchUserWithCart;
 module.exports.removeFromCart = removeFromCart;
 module.exports.googleLogin = googleLogin;
 module.exports.updateUser = updateUser;
+module.exports.updatePassword = updatePassword;

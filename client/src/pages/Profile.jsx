@@ -17,6 +17,7 @@ const Profile = () => {
   const [isEditBtn, setIsEditBtn] = useState(false);
   const [isPasswordBtn, setIsPasswordBtn] = useState(false);
   const [previewURL, setPreviewUrl] = useState(null);
+  const [newPassword, setNewPassword] = useState(false);
 
   const [editForm, setEditForm] = useState({});
 
@@ -27,6 +28,25 @@ const Profile = () => {
   });
 
   const { loginSuccess } = useAuth();
+
+  const handleSubmit = useHandleSubmit();
+
+  useEffect(() => {
+    const setEdit = () => {
+      if (userDetails) {
+        setEditForm(userDetails);
+      }
+    };
+    const setInputsPassword = ()=>{
+      if (!userDetails.password) {
+        setNewPassword(true);
+      } else {
+        setNewPassword(false);
+      }
+    }
+    setInputsPassword();
+    setEdit();
+  }, [userDetails]);
 
   const fetchedUser = async () => {
     await axios
@@ -41,10 +61,9 @@ const Profile = () => {
       });
   };
 
-  const handleSubmit = useHandleSubmit();
-
   useEffect(() => {
     fetchedUser();
+    
   }, []);
 
   const handleEditSubmit = async (e) => {
@@ -52,13 +71,13 @@ const Profile = () => {
     try {
       await axios
         .post(
-          `http://localhost:5000/users/updateuser/${editForm._id}`,
+          `http://localhost:5000/users/updateuser/${userDetails._id}`,
           editForm,
           {
             withCredentials: true,
           }
         )
-        .then(async(resp) => {
+        .then(async (resp) => {
           if (resp.data.status) {
             setUserDetails(resp.data.updatedUser);
             notify.success(resp.data.message);
@@ -70,7 +89,7 @@ const Profile = () => {
         .catch((err) => {
           notify.error("Error Updating User Deatils..");
           console.log(err);
-        })
+        });
     } catch (err) {
       notify.error("Error Updating User Deatils..");
       console.log(err);
@@ -78,17 +97,29 @@ const Profile = () => {
   };
 
   const handlePasswordSubmit = (e) => {
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      alert("New passwords do not match!");
-      return;
+    e.preventDefault();
+    if(!newPassword){
+      if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+        notify.error("New passwords do not match!")
+        return;
+      }
     }
-    handleSubmit(e, passwordForm, "UpdatePassword");
-    setIsPasswordBtn(false); // Close form after submit
+    axios.post(`http://localhost:5000/users/updatepassword/${userDetails._id}`,{passwordForm,newPassword},{
+      withCredentials:true
+    }).then((resp)=>{
+      console.log(resp.data.status);
+    })
+    .catch((err)=>{
+      console.log(err.message);
+    })
+    // else{
+
+    // }
     setPasswordForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    }); // Reset
+      currentPassword:"",
+      newPassword:"",
+      confirmPassword:"",
+    });
   };
 
   const handleFileChange = (e) => {
@@ -101,15 +132,6 @@ const Profile = () => {
       setPreviewUrl(null);
     }
   };
-
-  useEffect(() => {
-    const setEdit = ()=>{
-      if (userDetails) {
-        setEditForm(userDetails);
-      }
-    }
-    setEdit();
-  }, [userDetails]);
 
   return (
     <div className="relative min-h-screen w-full flex flex-col bg-zinc-50 ">
@@ -152,20 +174,19 @@ const Profile = () => {
 
             {/* Profile View */}
             {!isEditBtn && !isPasswordBtn && (
-              
               <div>
                 <div className="mb-4 flex justify-between p-2">
                   <h1 className="capitalize text-gray-900 text-3xl font-bold">
                     {userDetails.fullName || "N/A"}
                   </h1>
-                  <div className=" bg-zinc-50 overflow-hidden rounded-full p-2">
+                  <div className=" h-40 w-40 bg-zinc-50 overflow-hidden rounded-full p-2">
                     <img
                       src={
                         userDetails.profilePic === "" || null
                           ? "https://imgs.search.brave.com/v3K9Ei5XBK7aQW1GB0EAJ9VOSFEZe7Lh_OLnJ47fmXs/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/cG5nYWxsLmNvbS93/cC1jb250ZW50L3Vw/bG9hZHMvNS9Qcm9m/aWxlLUF2YXRhci1Q/TkctRnJlZS1Eb3du/bG9hZC5wbmc"
                           : userDetails.profilePic
                       }
-                      className="h-30 w-30 rounded-full"
+                      className="h-full w-full object-cover rounded-full"
                       alt="profile Picture"
                     />
                   </div>
@@ -186,7 +207,10 @@ const Profile = () => {
 
             {/* Edit Profile Form */}
             {isEditBtn && (
-              <form onSubmit={(e)=>handleEditSubmit(e)} className="flex flex-col gap-3">
+              <form
+                onSubmit={(e) => handleEditSubmit(e)}
+                className="flex flex-col gap-3"
+              >
                 <InputBox
                   data={editForm}
                   setData={setEditForm}
@@ -256,14 +280,18 @@ const Profile = () => {
                 onSubmit={handlePasswordSubmit}
                 className="flex flex-col gap-3"
               >
-                <InputBox
-                  data={passwordForm}
-                  setData={setPasswordForm}
-                  title="Current Password"
-                  name="currentPassword"
-                  type="password"
-                  placeholder="Enter your current password"
-                />
+                {!newPassword ? (
+                  <InputBox
+                    data={passwordForm}
+                    setData={setPasswordForm}
+                    title="Current Password"
+                    name="currentPassword"
+                    type="password"
+                    placeholder="Enter your current password"
+                  />
+                ) : (
+                  <></>
+                )}
                 <InputBox
                   data={passwordForm}
                   setData={setPasswordForm}
@@ -292,7 +320,7 @@ const Profile = () => {
                     type="submit"
                     className="px-4 py-2 text-sm rounded bg-green-600 text-white hover:bg-green-700"
                   >
-                    Update Password
+                    {newPassword?"Set Password":"Update Password"}
                   </button>
                 </div>
               </form>

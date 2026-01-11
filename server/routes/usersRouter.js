@@ -3,7 +3,7 @@ const router = express.Router();
 
 require('dotenv').config('JWT_KEY');
 
-const {registerUser,loginUser, logoutUser, verifyUser, fetchUserWithCart, removeFromCart, googleLogin, updateUser} = require('../controllers/userController');
+const {registerUser,loginUser, logoutUser, verifyUser, fetchUserWithCart, removeFromCart, googleLogin, updateUser, updatePassword} = require('../controllers/userController');
 const { auth } = require('../middlewares/auth');
 const { addToCart } = require('../controllers/userController');
 const authorize = require('../middlewares/authorize');
@@ -30,6 +30,7 @@ router.get("/deletefromcart/:id",auth,authorize("user"),removeFromCart);
 
 router.post("/updateuser/:id",auth,authorize("user"),updateUser)
 
+router.post("/updatepassword/:id",auth,authorize("user"),updatePassword)
 
 
 module.exports = router;
