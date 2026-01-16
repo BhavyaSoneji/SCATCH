@@ -48,8 +48,8 @@ const googleLogin = async (req, resp) => {
     });
   } catch (err) {
     console.error(err);
-    resp.status(401).json({
-      success: false,
+    resp.status(500).send({
+      status: false,
       message: "Google authentication failed",
     });
   }
@@ -60,7 +60,7 @@ const registerUser = async (req, resp) => {
     const { email, fullName, password, contact } = req.body;
     const registeredUser = await userModel.find({ email });
     if (registeredUser.length > 0) {
-      resp.status(500).json({ status: false, message: "user already exist.." });
+      resp.status(500).send({ status: false, message: "user already exist.." });
     } else {
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, async (err, hash) => {
@@ -111,9 +111,9 @@ const loginUser = async (req, resp) => {
             });
             resp
               .status(201)
-              .json({ status: true, message: "Login Successfully done.." });
+              .send({ status: true, message: "Login Successfully done.." });
           } else {
-            resp.status(500).json({
+            resp.status(500).send({
               status: false,
               message: "Email or Password is incorrect..",
             });
@@ -131,9 +131,9 @@ const loginUser = async (req, resp) => {
           });
           resp
             .status(201)
-            .json({ status: true, message: "Login Successfully done.." });
+            .send({ status: true, message: "Login Successfully done.." });
         } else {
-          resp.status(500).json({
+          resp.status(500).send({
             status: false,
             message: "Email or Password is incorrect..",
           });
@@ -141,13 +141,13 @@ const loginUser = async (req, resp) => {
       });
     }
   } catch (err) {
-    resp.status(500).json({ status: false, error: err.message });
+    resp.status(500).send({ status: false, error: err.message });
   }
 };
 
 const logoutUser = async (req, resp) => {
   resp.cookie("token", "");
-  resp.status(201).json({ status: true, message: "Logout Successfully Done." });
+  resp.status(201).send({ status: true, message: "Logout Successfully Done." });
 };
 
 const verifyUser = async (req, resp) => {
@@ -209,7 +209,7 @@ const fetchUserWithCart = async (req, resp) => {
       .lean();
 
     if (!user) {
-      return resp.status(404).json({
+      return resp.status(404).send({
         status: false,
         message: "User not found",
       });
@@ -235,8 +235,8 @@ const fetchUserWithCart = async (req, resp) => {
     });
   } catch (err) {
     resp
-      .status(401)
-      .json({ status: false, message: "Error fetching the User With Cart" });
+      .status(500)
+      .send({ status: false, message: "Error fetching the User With Cart" });
   }
 };
 
@@ -251,7 +251,7 @@ const removeFromCart = async (req, resp) => {
   );
 
   if (user.modifiedCount === 0) {
-    return resp.status(404).json({
+    return resp.status(404).send({
       status: false,
       message: "Product not found in cart",
     });
@@ -276,7 +276,7 @@ const updateUser = async (req, resp) => {
     );
     if (!newUser) {
       resp
-        .status(401)
+        .status(500)
         .send({ status: false, message: "Error Updating User.." });
     } else {
       console.log(newUser);
@@ -287,58 +287,82 @@ const updateUser = async (req, resp) => {
       });
     }
   } catch (err) {
-    resp.status(401).send({ status: false, message: "Error Updating User.." });
+    resp.status(500).send({ status: false, message: "Error Updating User.." });
   }
 };
 
-const updatePassword = async (req, resp) =>{
-    const {passwordForm,newPassword} = req.body;
-    const user = await userModel.findOne({_id:req.params.id});
-    if(newPassword){
-      console.log("inside");
-      bcrypt.genSalt(10,(err,salt)=>{
-        if(err){
-          resp.status(401).json({status:false,message:"error during update password.."});
-        }else{
-          bcrypt.hash(passwordForm.confirmPassword,salt,async(err,hash)=>{
-            if(err){
-              resp.status(401).json({status:false,message:"error during update password.."});
-            }else{
-              user['password'] = hash;
-              await user.save();
-              const token = generateToken(user,"user");
-              resp.cookie("token",token);
-              resp.status(200).json({status:true,message:"New Password Created.."});
-            }
-          })
+const updatePassword = async (req, resp) => {
+  const { passwordForm, newPassword } = req.body;
+  const user = await userModel.findOne({ _id: req.params.id });
+  if (newPassword) {
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) {
+        resp
+          .status(500)
+          .send({ status: false, message: "error updating  password.." });
+      } else {
+        bcrypt.hash(passwordForm.confirmPassword, salt, async (err, hash) => {
+          if (err) {
+            resp
+              .status(500)
+              .send({ status: false, message: "error updating  password.." });
+          } else {
+            user["password"] = hash;
+            await user.save();
+            const token = generateToken(user, "user");
+            resp.cookie("token", token);
+            resp
+              .status(200)
+              .send({ status: true, message: "New Password Created.." });
+          }
+        });
+      }
+    });
+  } else {
+    bcrypt.compare(passwordForm.currentPassword,user.password,(err, result) => {
+        if (err) {
+          resp
+            // .status(500)
+            .send({status: false, message: "error updating  password.."});
         }
-      })
-    }else{
-      bcrypt.compare(passwordForm.currentPassword,user.password,(err,result)=>{
-        if(result){
-          bcrypt.genSalt(10,(err,salt)=>{
-            if(err){
-              resp.status(401).json({status:false,message:"error during update password.."});
-            }else{
-              bcrypt.hash(passwordForm.confirmPassword,salt,async(err,hash)=>{
-                if(err){
-                  resp.status(401).json({status:false,message:"error during update password.."});
-                }else{
-                  user.passwrod = hash;
-                  await user.save();
-                  const token = generateToken(user,"user");
-                  resp.cookie("token",token);
-                  resp.status(200).json({status:true,message:"Password Updated Successfully.."});
+        else{
+          if (result) {
+            bcrypt.genSalt(10, (err, salt) => {
+              bcrypt.hash(
+                passwordForm.confirmPassword,
+                salt,
+                async (err, hash) => {
+                  if (err) {
+                    resp
+                      .status(500)
+                      .send({
+                        status: false,
+                        message: "error updating  password..",
+                      });
+                  } else {
+                    user.passwrod = hash;
+                    await user.save();
+                    const token = generateToken(user, "user");
+                    resp.cookie("token", token);
+                    resp
+                      .status(200)
+                      .send({
+                        status: true,
+                        message: "Password Updated Successfully..",
+                      });
+                  }
                 }
-              })
-            }
-          })
+              );
+            });
+          } else if(!result) {
+            resp
+              // .status(500)
+              .send({ status: false, message: "Invalid Password.." });
+          }
         }
-        // else{
-
-        // }
-      })
-    }
+      }
+    );
+  }
 };
 
 module.exports.registerUser = registerUser;

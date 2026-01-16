@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Trash2, Plus, Minus, Heart, Delete } from "lucide-react";
-import axios from "axios";
 import { useCart } from "../context/CartContext";
 
 const CartProductCard = ({
@@ -38,13 +37,15 @@ const CartProductCard = ({
             {name}
           </h1>
           <div className="flex gap-3 items-center">
-            <h2 className="text-lg font-bold">₹{price}</h2>
             {discount > 0 ? (
-              <h2 className="text-md font-medium text-zinc-400 line-through">
-                ₹{discount}
-              </h2>
+              <>
+                <h2 className="text-lg font-bold ">
+                  ₹{discount}
+                </h2>
+                <h2 className="text-md font-medium text-zinc-400 line-through">₹{price}</h2>
+              </>
             ) : (
-              <></>
+              <h2 className="text-lg font-bold">₹{price}</h2>
             )}
           </div>
         </div>
@@ -91,9 +92,9 @@ const CartProductCard = ({
             ></Trash2>
           </div>
         </div>
-        <div>
+        <div className="flex flex-col items-end">
           <p className="text-zinc-500">Items Total:</p>
-          <h2 className="text-xl font-bold">₹{price * quantity}</h2>
+          <h2 className="text-xl font-bold">₹{discount!=0?discount*qty:price*qty}</h2>
         </div>
       </div>
     </div>

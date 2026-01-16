@@ -10,6 +10,7 @@ import InputBox from "../components/InputBox";
 import notify from "../utils/notifications";
 import { useAuth } from "../context/AuthContext";
 import { Navigate } from "react-router";
+import InputBoxPassword from "../components/InputBoxPassword";
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
@@ -18,6 +19,8 @@ const Profile = () => {
   const [isPasswordBtn, setIsPasswordBtn] = useState(false);
   const [previewURL, setPreviewUrl] = useState(null);
   const [newPassword, setNewPassword] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [editForm, setEditForm] = useState({});
 
@@ -98,16 +101,21 @@ const Profile = () => {
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
-    if(!newPassword){
-      if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-        notify.error("New passwords do not match!")
-        return;
-      }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      notify.error("New passwords do not match!")
+      return;
     }
     axios.post(`http://localhost:5000/users/updatepassword/${userDetails._id}`,{passwordForm,newPassword},{
       withCredentials:true
     }).then((resp)=>{
-      console.log(resp.data.status);
+      if(resp.data.status)
+      {
+        notify.success(resp.data.message);
+        setIsPasswordBtn(false);
+      }else{
+        notify.error(resp.data.message);
+      }
+
     })
     .catch((err)=>{
       console.log(err.message);
@@ -281,13 +289,13 @@ const Profile = () => {
                 className="flex flex-col gap-3"
               >
                 {!newPassword ? (
-                  <InputBox
+                  <InputBoxPassword
                     data={passwordForm}
                     setData={setPasswordForm}
-                    title="Current Password"
                     name="currentPassword"
-                    type="password"
                     placeholder="Enter your current password"
+                    showPassword={showPassword}
+                    setShowPassword={setShowPassword}
                   />
                 ) : (
                   <></>
