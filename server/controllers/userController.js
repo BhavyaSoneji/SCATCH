@@ -99,7 +99,7 @@ const loginUser = async (req, resp) => {
     if (!user) {
       const owner = await ownerModel.findOne({ email });
       if (!owner) {
-        resp.status(500).send("Email or Password is incorrect..");
+        resp.status(401).send({status:false,message:"Email or Password is incorrect.."});
       } else {
         bcrypt.compare(password, owner.password, async (err, result) => {
           if (result) {
@@ -113,7 +113,7 @@ const loginUser = async (req, resp) => {
               .status(201)
               .send({ status: true, message: "Login Successfully done.." });
           } else {
-            resp.status(500).send({
+            resp.status(401).send({
               status: false,
               message: "Email or Password is incorrect..",
             });
@@ -215,11 +215,16 @@ const fetchUserWithCart = async (req, resp) => {
       });
     }
 
+    user.profilePic = `data:image/png;base64,${user.profilePic.toString("base64")}`;
+
+    console.log(user);
+
     const cartWithImages = user.cart.map((item) => ({
+      
       product: {
         ...item.product,
-        image: item.product.image
-          ? `data:image/png;base64,${item.product.image.toString("base64")}`
+        frontImage: item.product.frontImage
+          ? `data:image/png;base64,${item.product.frontImage.toString("base64")}`
           : null,
       },
       qty: item.qty,
@@ -262,11 +267,15 @@ const removeFromCart = async (req, resp) => {
     message: "Product Deleted Successfully..",
   });
 };
-
 const updateUser = async (req, resp) => {
   const updatedDetails = req.body;
   try {
-    const newUser = await userModel.findOneAndUpdate(
+
+    if(req.file){
+      updatedDetails.profilePic = req.file.buffer;
+    }
+      console.log(updatedDetails);
+      const newUser = await userModel.findOneAndUpdate(
       { _id: updatedDetails._id },
       updatedDetails,
       {
@@ -279,7 +288,7 @@ const updateUser = async (req, resp) => {
         .status(500)
         .send({ status: false, message: "Error Updating User.." });
     } else {
-      console.log(newUser);
+      // console.log(newUser);
       resp.status(200).send({
         status: true,
         message: "User Updated..",
@@ -290,7 +299,6 @@ const updateUser = async (req, resp) => {
     resp.status(500).send({ status: false, message: "Error Updating User.." });
   }
 };
-
 const updatePassword = async (req, resp) => {
   const { passwordForm, newPassword } = req.body;
   const user = await userModel.findOne({ _id: req.params.id });
@@ -322,7 +330,6 @@ const updatePassword = async (req, resp) => {
     bcrypt.compare(passwordForm.currentPassword,user.password,(err, result) => {
         if (err) {
           resp
-            // .status(500)
             .send({status: false, message: "error updating  password.."});
         }
         else{

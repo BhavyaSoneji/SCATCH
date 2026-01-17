@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import InputBox from "../components/InputBox";
 import Button from "../components/Button";
 import { useHandleSubmit } from "../utils/handleSubmit";
-import { Upload, Image as ImageIcon } from "lucide-react";
+import { X } from "lucide-react";
 
 const CreateProductForm = () => {
   const [product, setProduct] = useState({
-    image: null,
+    frontImage: null,
+    otherImages: [],
     name: "",
     price: "",
     discount: "",
@@ -14,7 +15,66 @@ const CreateProductForm = () => {
     panelColor: "#000000",
     textColor: "#000000",
   });
+  const [frontImagePreview, setFrontImagePreview] = useState(null);
+  const [multipleImagesPreview, setMultipleImagesPreview] = useState([]);
   const handleSubmit = useHandleSubmit();
+
+  const handleMultipleImagesChange = async (e) => {
+    const files = Array.from(e.target.files);
+
+    setProduct({ ...product, otherImages: files });
+
+    multipleImagesPreview.forEach((url) => {
+      return URL.revokeObjectURL(url);
+    });
+
+    const previreImages = files.map((file) => {
+      return URL.createObjectURL(file);
+    });
+    setMultipleImagesPreview(previreImages);
+
+    e.target.value=""
+  };
+
+  const handleFrontImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Revoke previous URL if exists
+      if (frontImagePreview) {
+        URL.revokeObjectURL(frontImagePreview);
+      }
+      // Create new preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setFrontImagePreview(previewUrl);
+      setProduct({
+        ...product,
+        frontImage: file,
+      });
+    }
+  };
+
+  const removeFrontImage = () => {
+    if (frontImagePreview) {
+      URL.revokeObjectURL(frontImagePreview);
+    }
+    setFrontImagePreview(null);
+    setProduct({ ...product, frontImage: null });
+  };
+
+  const removeFromMultipleImages = (url, index) => {
+
+    URL.revokeObjectURL(multipleImagesPreview[index]);
+    const newPrivews = multipleImagesPreview.filter((value) => {
+      return value != url;
+    });
+
+    setMultipleImagesPreview(newPrivews);
+    const otherImages = product.otherImages.filter((_,i)=>{
+      return i!==index;
+    })
+
+    setProduct({...product,otherImages});
+  };
 
   return (
     <div className="h-full w-full flex flex-col p-10 gap-4">
@@ -23,7 +83,10 @@ const CreateProductForm = () => {
       <form
         className="flex flex-col justify-between gap-10 p-10"
         encType="multipart/form-data"
-        onSubmit={(e) => handleSubmit(e, product, "Create Product")}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(e, product, "Create Product");
+        }}
       >
         {/* Create Product form */}
         <div className="flex gap-10">
@@ -33,21 +96,80 @@ const CreateProductForm = () => {
             <div className="flex flex-col gap-3">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Product Image
+                  Product Front Image
                 </label>
+
+                {/* Image Preview */}
+                {frontImagePreview && (
+                  <div className="mb-3 relative inline-block">
+                    <img
+                      src={frontImagePreview}
+                      alt="Preview"
+                      className="w-32 h-32 object-cover rounded-lg border-2 border-zinc-300"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeFrontImage}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
+                      title="Remove image"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
+
                 <input
                   className="w-full px-4 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                   type="file"
-                  name="image"
-                  onChange={(e) => {
-                    setProduct({
-                      ...product,
-                      [e.target.name]: e.target.files[0],
-                    });
-                  }}
+                  name="frontImage"
+                  accept="image/*"
+                  onChange={handleFrontImageChange}
                   required
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Product Other Images
+                </label>
+
+                {multipleImagesPreview.length != 0 && (
+                  <div className="flex flex-wrap gap-3 h-40 overflow-y-scroll px-2 pt-3">
+                    {multipleImagesPreview.map((url, index) => {
+                      return (
+                        <div
+                          className="mb-3 relative inline-block w-fit"
+                          key={index}
+                        >
+                          <img
+                            src={url}
+                            className="w-30 h-30 object-cover rounded-lg border-2 border-zinc-300"
+                            alt="Preview Image"
+                          ></img>
+                          <button
+                            type="button"
+                            onClick={() => removeFromMultipleImages(url, index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
+                            title="Remove image"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <input
+                  className="w-full px-4 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  type="file"
+                  multiple={true}
+                  name="otherImages"
+                  accept="image/*"
+                  onChange={(e) => handleMultipleImagesChange(e)}
+                />
+              </div>
+
               <InputBox
                 data={product}
                 setData={setProduct}
@@ -113,9 +235,12 @@ const CreateProductForm = () => {
         </div>
 
         {/* Create Product Button */}
-        <div className="w-full flex justify-center">
+        <div className="w-full flex justify-center ite">
           <div className="w-1/3">
-            <Button value="Create Product" className="bg-blue-600 hover:bg-blue-700" />
+            <Button
+              value="Create Product"
+              className="bg-blue-600 hover:bg-blue-700 px-3 w-full"
+            />
           </div>
         </div>
       </form>

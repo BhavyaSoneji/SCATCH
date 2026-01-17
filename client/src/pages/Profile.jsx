@@ -66,8 +66,8 @@ const Profile = () => {
 
   useEffect(() => {
     fetchedUser();
-    
   }, []);
+
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
@@ -78,7 +78,10 @@ const Profile = () => {
           editForm,
           {
             withCredentials: true,
-          }
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          },
         )
         .then(async (resp) => {
           if (resp.data.status) {
@@ -98,6 +101,7 @@ const Profile = () => {
       console.log(err);
     }
   };
+  
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
@@ -134,7 +138,7 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setEditForm({ ...editForm, profilePic: url });
+      setEditForm({ ...editForm, profilePic: file });
       setPreviewUrl(url);
     } else {
       setPreviewUrl(null);
@@ -218,6 +222,7 @@ const Profile = () => {
               <form
                 onSubmit={(e) => handleEditSubmit(e)}
                 className="flex flex-col gap-3"
+                encType="multipart/form-data"
               >
                 <InputBox
                   data={editForm}

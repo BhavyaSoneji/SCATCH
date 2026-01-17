@@ -97,7 +97,7 @@ const Dashboard = () => {
             if(index<=7){
               return (
                 <ProductCard
-                  image={product.image}
+                  frontImage={product.frontImage}
                   name={product.name}
                   price={product.price}
                   discount={product.discount}

@@ -63,7 +63,9 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => {};
 
   useEffect(() => {
-    setCart(fetchCart())
+    return ()=>{
+      setCart(fetchCart())
+    }
   }, []);
 
   return (

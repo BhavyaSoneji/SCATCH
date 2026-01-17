@@ -7,7 +7,7 @@ const CartProductCard = ({
   name,
   price,
   discount,
-  image,
+  frontImage,
   qty
 }) => {
 
@@ -27,7 +27,7 @@ const CartProductCard = ({
       <div className="h-full bg-zinc-200 rounded-lg px-3 py-2">
         <img
           className="object-contain h-full  hover:scale-110 transition-all 700 ease-in"
-          src={image}
+          src={frontImage}
         ></img>
       </div>
 

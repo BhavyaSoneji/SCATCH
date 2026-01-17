@@ -10,7 +10,7 @@ router.get("/", (req, resp) => {
   resp.json({ message: "Hey there products" });
 });
 
-router.post("/create", auth,authorize("owner"), upload.single('image'),createProduct);
+router.post("/create", auth,authorize("owner"),upload.any(),createProduct);
 
 router.get("/shop",auth,authorize('user','owner'),fetchAllProducts);
 

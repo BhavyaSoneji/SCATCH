@@ -23,7 +23,6 @@ const Shop = () => {
     setIsLoading(true);
     try {
       const productsList = await getAllProducts();
-      console.log(productsList);
       setProducts(productsList);
       setFilteredProducts(productsList);
     } catch (err) {
@@ -325,7 +324,7 @@ const Shop = () => {
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <ProductCard
-                      image={product.image}
+                      frontImage={product.frontImage}
                       name={product.name}
                       price={product.price}
                       discount={product.discount}

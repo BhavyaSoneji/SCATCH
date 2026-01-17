@@ -43,9 +43,6 @@ export const Login = () => {
         { token: googleToken },
         { withCredentials: true }
       );
-
-      notify.success("Login Successfully");
-
       loginSuccess();
     } catch (err) {
       notify.error("Login Failed");

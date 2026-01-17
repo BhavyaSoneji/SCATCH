@@ -7,6 +7,7 @@ const {registerUser,loginUser, logoutUser, verifyUser, fetchUserWithCart, remove
 const { auth } = require('../middlewares/auth');
 const { addToCart } = require('../controllers/userController');
 const authorize = require('../middlewares/authorize');
+const { upload } = require('../config/multer-config');
 
 router.get('/', (req, resp) => {
     resp.json({ message: 'Hey there users' });
@@ -28,7 +29,7 @@ router.get("/userwithcart",auth,authorize("user",'owner'),fetchUserWithCart);
 
 router.get("/deletefromcart/:id",auth,authorize("user"),removeFromCart);
 
-router.post("/updateuser/:id",auth,authorize("user"),updateUser)
+router.post("/updateuser/:id",auth,authorize("user"),upload.single('profilePic'),updateUser)
 
 router.post("/updatepassword/:id",auth,authorize("user"),updatePassword)
 

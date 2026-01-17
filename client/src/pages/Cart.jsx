@@ -10,6 +10,8 @@ const Cart = () => {
   const navigate = useNavigate();
   const { cart } = useCart();
 
+  console.log(cart);
+  
   const [searchValue, setSearchValue] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
 
@@ -109,7 +111,7 @@ const Cart = () => {
                   key={index}
                   id={product.product._id}
                   discount={product.product.discount}
-                  image={product.product.image}
+                  frontImage={product.product.frontImage}
                   name={product.product.name}
                   price={product.product.price}
                   qty={product.qty}

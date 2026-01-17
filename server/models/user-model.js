@@ -38,8 +38,7 @@ const userSchema = mongoose.Schema({
     default: "local",
   },
   profilePic: {
-    type: String,
-    default: "",
+    type: Buffer,
   },
 });
 

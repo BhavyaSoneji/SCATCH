@@ -3,24 +3,24 @@ import { useCart } from '../context/cartContext';
 
 const ProductCard = ({ 
   id,
-  image, 
+  frontImage, 
   name, 
   price, 
   discount, 
   bgColor = "#ffffff",
   showSale = false, 
 }) => {
-
-  // const navigate = useNavigate();
-
   const {addToCart} = useCart();
 
   const handleAddToCart = (id)=>{
-    addToCart(id)
+    addToCart(id);
   }
 
+  
+
   return (
-    <div className='relative h-105 w-68 bg-white shrink-0' style={{ backgroundColor: bgColor }}>
+    <div className='relative h-105 w-68 bg-white shrink-0' style={{ backgroundColor: bgColor }} onClick={()=>{
+    }}>
       {/* Sale Badge */}
       {showSale && discount && discount < price && (
         <div className="absolute top-4 right-4 bg-zinc-900 text-white px-3 py-1 text-xs font-medium uppercase tracking-wider">
@@ -32,7 +32,7 @@ const ProductCard = ({
       <div className='h-4/6 justify-center bg-zinc-200 flex flex-col overflow-hidden'>
         <img 
           className='hover:scale-105 transition-transform duration-500 ease-out' 
-          src={image}
+          src={frontImage}
           alt={name}
         />
       </div>
