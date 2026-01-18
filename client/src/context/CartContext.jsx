@@ -5,6 +5,7 @@ import notify from "../utils/notifications"
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  
   const [cart, setCart] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -14,8 +15,8 @@ export const CartProvider = ({ children }) => {
         const resp = await axios.get('http://localhost:5000/users/userwithcart',{
           withCredentials:true
         });
-        setCart(resp.data.cart);
         console.log(resp);
+        setCart(resp.data.cart);
         return resp.data.cart || [];
     }catch(err){
         console.log(err);
@@ -63,9 +64,11 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => {};
 
   useEffect(() => {
-    return ()=>{
-      setCart(fetchCart())
+    const fetch = async()=>{
+      const cart = await fetchCart();
+      setCart(cart);
     }
+    fetch();
   }, []);
 
   return (

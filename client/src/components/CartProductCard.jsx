@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Trash2, Plus, Minus, Heart, Delete } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
@@ -12,16 +12,28 @@ const CartProductCard = ({
 }) => {
 
   const [quantity, setQuantity] = useState(qty);
+  const [finalPrice, setFinalPrice] = useState(price*quantity);
+
+  useEffect(()=>{
+    const setNewPrice = ()=>{
+      if(discount>0)
+        setFinalPrice(discount*quantity);
+      else
+        setFinalPrice(price*quantity);
+    }
+    setNewPrice();
+  },[quantity,price,discount]);
 
   const handleQtyInc = () => {
-    if (quantity < 10) setQuantity(quantity+1);
+    if (quantity < 10) setQuantity((prev)=>prev+1);
   };
 
   const handleQtyDec = () => {
-    if (quantity > 1) setQuantity(quantity-1);
+    if (quantity > 1) setQuantity((prev)=>prev-1);
   };
 
   const {removeFromCart} = useCart();
+
   return (
     <div className="flex h-50 gap-10 w-full rounded-lg shadow-lg p-5 ">
       <div className="h-full bg-zinc-200 rounded-lg px-3 py-2">
@@ -94,7 +106,7 @@ const CartProductCard = ({
         </div>
         <div className="flex flex-col items-end">
           <p className="text-zinc-500">Items Total:</p>
-          <h2 className="text-xl font-bold">₹{discount!=0?discount*qty:price*qty}</h2>
+          <h2 className="text-xl font-bold">₹{finalPrice}</h2>
         </div>
       </div>
     </div>

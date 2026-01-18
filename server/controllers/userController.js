@@ -99,7 +99,9 @@ const loginUser = async (req, resp) => {
     if (!user) {
       const owner = await ownerModel.findOne({ email });
       if (!owner) {
-        resp.status(401).send({status:false,message:"Email or Password is incorrect.."});
+        resp
+          .status(401)
+          .send({ status: false, message: "Email or Password is incorrect.." });
       } else {
         bcrypt.compare(password, owner.password, async (err, result) => {
           if (result) {
@@ -180,7 +182,7 @@ const addToCart = async (req, resp) => {
     } else {
       // Add new item to cart
       user.cart.push({
-        product: req.params.id.toString(),
+        product: req.params.id,
         qty: 1,
       });
     }
@@ -203,41 +205,37 @@ const addToCart = async (req, resp) => {
 
 const fetchUserWithCart = async (req, resp) => {
   try {
-    const user = await userModel
-      .findOne({ _id: req.id })
-      .populate("cart.product")
-      .lean();
+  const user = await userModel
+    .findOne({ _id: req.id })
+    .populate("cart.product")
+    .lean();
 
-    if (!user) {
-      return resp.status(404).send({
-        status: false,
-        message: "User not found",
-      });
-    }
-
-    user.profilePic = `data:image/png;base64,${user.profilePic.toString("base64")}`;
-
-    console.log(user);
-
-    const cartWithImages = user.cart.map((item) => ({
-      
-      product: {
-        ...item.product,
-        frontImage: item.product.frontImage
-          ? `data:image/png;base64,${item.product.frontImage.toString("base64")}`
-          : null,
-      },
-      qty: item.qty,
-    }));
-
-    const { cart, ...userWithoutCart } = user;
-
-    resp.status(201).send({
-      status: true,
-      Message: "User With Cart Fetched Successfully",
-      user: userWithoutCart,
-      cart: cartWithImages,
+  if (!user) {
+    return resp.status(404).send({
+      status: false,
+      message: "User not found",
     });
+  }
+
+  user.profilePic = `data:image/png;base64,${user.profilePic.toString("base64")}`;
+
+  const cartWithImages = user.cart.map((item) => ({
+    product:{...item.product,
+      frontImage:item.product.frontImage
+      ?`data:image/png;base64,${item.product.frontImage.toString('base64')}`
+      :null
+    },
+    qty:item.qty
+  }));
+
+  const { cart, ...userWithoutCart } = user;
+
+  resp.status(201).send({
+    status: true,
+    Message: "User With Cart Fetched Successfully",
+    user: userWithoutCart,
+    cart: cartWithImages,
+  });
   } catch (err) {
     resp
       .status(500)
@@ -252,7 +250,7 @@ const removeFromCart = async (req, resp) => {
       $pull: {
         cart: { product: req.params.id },
       },
-    }
+    },
   );
 
   if (user.modifiedCount === 0) {
@@ -267,21 +265,21 @@ const removeFromCart = async (req, resp) => {
     message: "Product Deleted Successfully..",
   });
 };
+
 const updateUser = async (req, resp) => {
   const updatedDetails = req.body;
   try {
-
-    if(req.file){
+    if (req.file) {
       updatedDetails.profilePic = req.file.buffer;
     }
-      console.log(updatedDetails);
-      const newUser = await userModel.findOneAndUpdate(
+    console.log(updatedDetails);
+    const newUser = await userModel.findOneAndUpdate(
       { _id: updatedDetails._id },
       updatedDetails,
       {
         new: true,
         runValidator: true,
-      }
+      },
     );
     if (!newUser) {
       resp
@@ -299,6 +297,7 @@ const updateUser = async (req, resp) => {
     resp.status(500).send({ status: false, message: "Error Updating User.." });
   }
 };
+
 const updatePassword = async (req, resp) => {
   const { passwordForm, newPassword } = req.body;
   const user = await userModel.findOne({ _id: req.params.id });
@@ -327,12 +326,13 @@ const updatePassword = async (req, resp) => {
       }
     });
   } else {
-    bcrypt.compare(passwordForm.currentPassword,user.password,(err, result) => {
+    bcrypt.compare(
+      passwordForm.currentPassword,
+      user.password,
+      (err, result) => {
         if (err) {
-          resp
-            .send({status: false, message: "error updating  password.."});
-        }
-        else{
+          resp.send({ status: false, message: "error updating  password.." });
+        } else {
           if (result) {
             bcrypt.genSalt(10, (err, salt) => {
               bcrypt.hash(
@@ -340,34 +340,30 @@ const updatePassword = async (req, resp) => {
                 salt,
                 async (err, hash) => {
                   if (err) {
-                    resp
-                      .status(500)
-                      .send({
-                        status: false,
-                        message: "error updating  password..",
-                      });
+                    resp.status(500).send({
+                      status: false,
+                      message: "error updating  password..",
+                    });
                   } else {
                     user.passwrod = hash;
                     await user.save();
                     const token = generateToken(user, "user");
                     resp.cookie("token", token);
-                    resp
-                      .status(200)
-                      .send({
-                        status: true,
-                        message: "Password Updated Successfully..",
-                      });
+                    resp.status(200).send({
+                      status: true,
+                      message: "Password Updated Successfully..",
+                    });
                   }
-                }
+                },
               );
             });
-          } else if(!result) {
+          } else if (!result) {
             resp
               // .status(500)
               .send({ status: false, message: "Invalid Password.." });
           }
         }
-      }
+      },
     );
   }
 };

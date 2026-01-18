@@ -16,8 +16,6 @@ const ProductCard = ({
     addToCart(id);
   }
 
-  
-
   return (
     <div className='relative h-105 w-68 bg-white shrink-0' style={{ backgroundColor: bgColor }} onClick={()=>{
     }}>

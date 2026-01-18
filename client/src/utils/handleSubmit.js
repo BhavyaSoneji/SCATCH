@@ -61,9 +61,11 @@ export const useHandleSubmit = () => {
           if (resp.data.status) {
             notify.success("Product Created Successfully");
             console.log(resp?.data?.message || "Product Created Sccessfully..");
+            return true;
           } else {
             notify.error("Error Creating Product");
             console.log(resp?.data?.message || "Error Creating Product..");
+            return false;
           }
         })
         .catch((err) => {
@@ -71,6 +73,7 @@ export const useHandleSubmit = () => {
           console.log(
             err.response?.data?.message || "Product Creation Failed.."
           );
+          return false;
         });
     } else if (value.toLowerCase() == "Logout".toLowerCase()) {
       axios

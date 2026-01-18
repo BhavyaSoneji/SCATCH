@@ -3,22 +3,22 @@ import NavBar from "../components/NavBar";
 import { Search } from "lucide-react";
 import CartProductCard from "../components/CartProductCard";
 import { useNavigate } from "react-router";
-import { useCart } from "../context/CartContext";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useCart } from "../context/CartContext";
 const Cart = () => {
-  const navigate = useNavigate();
-  const { cart } = useCart();
-
-  console.log(cart);
   
+  const {cart} = useCart();
+
+  const navigate = useNavigate();
+
   const [searchValue, setSearchValue] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
 
 
   useEffect(() => {
     const setDefault = async () => {
-      await setFilteredProducts(cart);
+      setFilteredProducts(cart);
     };
     setDefault();
   }, []);

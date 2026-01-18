@@ -2,13 +2,14 @@ const productModel = require("../models/product-model");
 const createProduct = async (req, resp) => {
   const { name, price, discount, bgColor, textColor, panelColor } = req.body;
 
-  const otherImages = req.files.filter((f)=> f.fieldname == 'otherImages[]')
+  const otherImages = req.files.filter((f)=> f.fieldname == 'otherImages[]') || []
+
+  console.log(otherImages);
 
   const frontImage = req.files.find((f)=> f.fieldname == 'frontImage');
 
   console.log(otherImages);
   
-
   const createdProduct = await productModel.create({
     frontImage: frontImage.buffer,
     otherImages: otherImages.map((image)=>{
@@ -21,6 +22,7 @@ const createProduct = async (req, resp) => {
     textColor,
     panelColor,
   });
+  console.log(createdProduct);
   resp.status(201).send({
     status: true,
     message: "Product Created successfully",

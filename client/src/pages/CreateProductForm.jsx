@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputBox from "../components/InputBox";
 import Button from "../components/Button";
 import { useHandleSubmit } from "../utils/handleSubmit";
 import { X } from "lucide-react";
 
 const CreateProductForm = () => {
-  const [product, setProduct] = useState({
+  const defaultProduct = {
     frontImage: null,
     otherImages: [],
     name: "",
@@ -14,9 +14,11 @@ const CreateProductForm = () => {
     bgColor: "#ffffff",
     panelColor: "#000000",
     textColor: "#000000",
-  });
+  };
+  const [product, setProduct] = useState(defaultProduct);
   const [frontImagePreview, setFrontImagePreview] = useState(null);
   const [multipleImagesPreview, setMultipleImagesPreview] = useState([]);
+  const [isSuccess, setIsSuccess] = useState();
   const handleSubmit = useHandleSubmit();
 
   const handleMultipleImagesChange = async (e) => {
@@ -33,7 +35,7 @@ const CreateProductForm = () => {
     });
     setMultipleImagesPreview(previreImages);
 
-    e.target.value=""
+    e.target.value = "";
   };
 
   const handleFrontImageChange = (e) => {
@@ -51,6 +53,7 @@ const CreateProductForm = () => {
         frontImage: file,
       });
     }
+    e.target.value="";
   };
 
   const removeFrontImage = () => {
@@ -62,19 +65,31 @@ const CreateProductForm = () => {
   };
 
   const removeFromMultipleImages = (url, index) => {
-
     URL.revokeObjectURL(multipleImagesPreview[index]);
     const newPrivews = multipleImagesPreview.filter((value) => {
       return value != url;
     });
 
     setMultipleImagesPreview(newPrivews);
-    const otherImages = product.otherImages.filter((_,i)=>{
-      return i!==index;
-    })
+    const otherImages = product.otherImages.filter((_, i) => {
+      return i !== index;
+    });
 
-    setProduct({...product,otherImages});
+    setProduct({ ...product, otherImages });
   };
+
+  useEffect(() => {
+    if (isSuccess === true) {
+      // Reset product data
+      setProduct(defaultProduct);
+      
+      setFrontImagePreview(null);
+      setMultipleImagesPreview([]);
+    
+      // Reset success flag
+      setIsSuccess(null);
+    }
+  }, [isSuccess]);
 
   return (
     <div className="h-full w-full flex flex-col p-10 gap-4">
@@ -83,9 +98,9 @@ const CreateProductForm = () => {
       <form
         className="flex flex-col justify-between gap-10 p-10"
         encType="multipart/form-data"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit(e, product, "Create Product");
+        onSubmit={async (e) => {
+          await handleSubmit(e, product, "Create Product");
+          setIsSuccess(true);
         }}
       >
         {/* Create Product form */}
