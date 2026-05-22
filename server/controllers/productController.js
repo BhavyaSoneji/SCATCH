@@ -1,18 +1,21 @@
 const productModel = require("../models/product-model");
+const mongoose = require("mongoose");
+
 const createProduct = async (req, resp) => {
   const { name, price, discount, bgColor, textColor, panelColor } = req.body;
 
-  const otherImages = req.files.filter((f)=> f.fieldname == 'otherImages[]') || []
+  const otherImages =
+    req.files.filter((f) => f.fieldname == "otherImages[]") || [];
 
   console.log(otherImages);
 
-  const frontImage = req.files.find((f)=> f.fieldname == 'frontImage');
+  const frontImage = req.files.find((f) => f.fieldname == "frontImage");
 
   console.log(otherImages);
-  
+
   const createdProduct = await productModel.create({
     frontImage: frontImage.buffer,
-    otherImages: otherImages.map((image)=>{
+    otherImages: otherImages.map((image) => {
       return image.buffer;
     }),
     name,
@@ -39,7 +42,6 @@ const fetchAllProducts = async (req, resp) => {
         ? `data:image/png;base64,${product.frontImage.toString("base64")}`
         : null,
     };
-    
   });
   resp.send({
     status: true,
@@ -48,4 +50,11 @@ const fetchAllProducts = async (req, resp) => {
   });
 };
 
-module.exports = { createProduct, fetchAllProducts };
+const fetchProduct = async (req, resp) => {
+  const id = new mongoose.Types.ObjectId(req.params.id); 
+  const product = await productModel.findOne({_id:id
+    
+  });
+  console.log(product);
+};
+module.exports = { createProduct, fetchAllProducts,fetchProduct };

@@ -2,3 +2,10 @@
 .products-container::-webkit-scrollbar{
     display: none;
 }
+/* Table image subtle zoom on row hover for a polished industrial look */
+table tbody tr img{
+    transition: transform 180ms ease-in-out;
+}
+table tbody tr:hover img{
+    transform: scale(1.03);
+}

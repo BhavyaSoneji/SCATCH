@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { CartProvider } from './context/cartContext.jsx'
+import { AllProductsProvider } from './context/ProductContext.jsx'
 
 import {Toaster} from "react-hot-toast"
 
@@ -32,9 +33,11 @@ createRoot(document.getElementById('root')).render(
   
   <GoogleOAuthProvider clientId={'213268500140-e3ojtenhs6e75gefoh0r92rc53iqc0is.apps.googleusercontent.com'}>
     <AuthProvider>
-      <CartProvider>
-        <App />
-      </CartProvider>
+      <AllProductsProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </AllProductsProvider>
     </AuthProvider>
     </GoogleOAuthProvider>
   </BrowserRouter>

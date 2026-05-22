@@ -3,6 +3,7 @@ import InputBox from "../components/InputBox";
 import Button from "../components/Button";
 import { useHandleSubmit } from "../utils/handleSubmit";
 import { X } from "lucide-react";
+import { useRef } from "react";
 
 const CreateProductForm = () => {
   const defaultProduct = {
@@ -19,7 +20,10 @@ const CreateProductForm = () => {
   const [frontImagePreview, setFrontImagePreview] = useState(null);
   const [multipleImagesPreview, setMultipleImagesPreview] = useState([]);
   const [isSuccess, setIsSuccess] = useState();
+
   const handleSubmit = useHandleSubmit();
+
+  const frontImage = useRef(null);
 
   const handleMultipleImagesChange = async (e) => {
     const files = Array.from(e.target.files);
@@ -34,8 +38,6 @@ const CreateProductForm = () => {
       return URL.createObjectURL(file);
     });
     setMultipleImagesPreview(previreImages);
-
-    e.target.value = "";
   };
 
   const handleFrontImageChange = (e) => {
@@ -52,16 +54,20 @@ const CreateProductForm = () => {
         ...product,
         frontImage: file,
       });
+      // frontImage.current.value = file;
     }
-    e.target.value="";
   };
 
   const removeFrontImage = () => {
     if (frontImagePreview) {
       URL.revokeObjectURL(frontImagePreview);
     }
+
+    console.log(document.getElementsByTagName(""));
     setFrontImagePreview(null);
     setProduct({ ...product, frontImage: null });
+    frontImage.current.value = null;
+
   };
 
   const removeFromMultipleImages = (url, index) => {
@@ -82,7 +88,6 @@ const CreateProductForm = () => {
     if (isSuccess === true) {
       // Reset product data
       setProduct(defaultProduct);
-      
       setFrontImagePreview(null);
       setMultipleImagesPreview([]);
     
@@ -139,6 +144,7 @@ const CreateProductForm = () => {
                   name="frontImage"
                   accept="image/*"
                   onChange={handleFrontImageChange}
+                  ref={frontImage}
                   required
                 />
               </div>

@@ -5,22 +5,24 @@ import CartProductCard from "../components/CartProductCard";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useCart } from "../context/CartContext";
+import { UseCart } from "../context/CartContext";
 const Cart = () => {
   
-  const {cart} = useCart();
+  const {cart} = UseCart();
 
   const navigate = useNavigate();
 
   const [searchValue, setSearchValue] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-
   useEffect(() => {
     const setDefault = async () => {
       setFilteredProducts(cart);
     };
     setDefault();
+
+    console.log(cart);
+
   }, []);
 
   useEffect(() => {

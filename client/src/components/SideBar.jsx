@@ -27,7 +27,16 @@ const SideBar = ({ navigationItems = [], showSettings = false }) => {
       {/* Logo & Toggle */}
       <div className="h-20 flex items-center justify-between px-6 border-b border-zinc-800">
         {sidebarOpen && (
-          <h1 className="text-2xl font-serif tracking-tight">Scatch</h1>
+          <h1
+            className="text-2xl font-serif tracking-tight hover:cursor-pointer"
+            onClick={
+              ()=>{
+                navigate("/dashboard")
+              }
+            }
+          >
+            Scatch
+          </h1>
         )}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}

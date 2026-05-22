@@ -60,7 +60,7 @@ const registerUser = async (req, resp) => {
     const { email, fullName, password, contact } = req.body;
     const registeredUser = await userModel.find({ email });
     if (registeredUser.length > 0) {
-      resp.status(500).send({ status: false, message: "user already exist.." });
+      resp.status(400).send({ status: false, message: "user already exist.." });
     } else {
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, async (err, hash) => {
@@ -135,7 +135,7 @@ const loginUser = async (req, resp) => {
             .status(201)
             .send({ status: true, message: "Login Successfully done.." });
         } else {
-          resp.status(500).send({
+          resp.status(401).send({
             status: false,
             message: "Email or Password is incorrect..",
           });
@@ -274,7 +274,7 @@ const updateUser = async (req, resp) => {
     }
     console.log(updatedDetails);
     const newUser = await userModel.findOneAndUpdate(
-      { _id: updatedDetails._id },
+      { _id: req.id },
       updatedDetails,
       {
         new: true,
@@ -283,10 +283,9 @@ const updateUser = async (req, resp) => {
     );
     if (!newUser) {
       resp
-        .status(500)
-        .send({ status: false, message: "Error Updating User.." });
+        .status(404)
+        .send({ status: false, message: "User Not Found.." });
     } else {
-      // console.log(newUser);
       resp.status(200).send({
         status: true,
         message: "User Updated..",
@@ -340,7 +339,7 @@ const updatePassword = async (req, resp) => {
                 salt,
                 async (err, hash) => {
                   if (err) {
-                    resp.status(500).send({
+                    resp.status(400).send({
                       status: false,
                       message: "error updating  password..",
                     });
@@ -359,7 +358,7 @@ const updatePassword = async (req, resp) => {
             });
           } else if (!result) {
             resp
-              // .status(500)
+              .status(401)
               .send({ status: false, message: "Invalid Password.." });
           }
         }

@@ -33,5 +33,4 @@ router.post("/updateuser/:id",auth,authorize("user"),upload.single('profilePic')
 
 router.post("/updatepassword/:id",auth,authorize("user"),updatePassword)
 
-
 module.exports = router;

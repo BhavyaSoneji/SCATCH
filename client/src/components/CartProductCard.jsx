@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Trash2, Plus, Minus, Heart, Delete } from "lucide-react";
-import { useCart } from "../context/CartContext";
+import { UseCart } from "../context/CartContext";
 
 const CartProductCard = ({
   id,
@@ -32,7 +32,7 @@ const CartProductCard = ({
     if (quantity > 1) setQuantity((prev)=>prev-1);
   };
 
-  const {removeFromCart} = useCart();
+  const {removeFromCart} = UseCart();
 
   return (
     <div className="flex h-50 gap-10 w-full rounded-lg shadow-lg p-5 ">

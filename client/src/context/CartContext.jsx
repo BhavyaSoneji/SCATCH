@@ -89,6 +89,6 @@ export const CartProvider = ({ children }) => {
   );
 };
 
-export const useCart = () => {
+export const UseCart = () => {
   return useContext(CartContext);
 };

@@ -9,6 +9,8 @@ import Cart from "./pages/Cart";
 import Error from "./pages/Error";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Profile from "./pages/Profile";
+import Product from "./pages/Product";
+import AllProducts from "./pages/AllProducts";
 
 const App = () => {
   return (
@@ -17,7 +19,7 @@ const App = () => {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute allowed={['owner','user']}>
+          <ProtectedRoute allowed={["owner", "user"]}>
             <Dashboard />
           </ProtectedRoute>
         }
@@ -25,64 +27,68 @@ const App = () => {
       <Route
         path="/shop"
         element={
-          <ProtectedRoute allowed={['owner','user']}>
+          <ProtectedRoute allowed={["owner", "user"]}>
             <Shop />
           </ProtectedRoute>
         }
       />
-
+      <Route path="/product/:id" element={<Product></Product>} />
       <Route
         path="/cart"
         element={
-          <ProtectedRoute allowed={['user']}>
-              <Cart />
+          <ProtectedRoute allowed={["user"]}>
+            <Cart />
           </ProtectedRoute>
         }
       />
       <Route
         path="/profile"
         element={
-          <ProtectedRoute allowed={['user']}>
+          <ProtectedRoute allowed={["user"]}>
             <Profile />
           </ProtectedRoute>
         }
       />
+      {/* Admin Raoutes */}
       <Route
         path="/admin"
         element={
-          <ProtectedRoute allowed={['owner']}>
+          <ProtectedRoute allowed={["owner"]}>
             <AdminPanel />
           </ProtectedRoute>
         }
       >
+        {/* Admin/Create Product Route */}
         <Route
           path="createproduct"
           element={
-            <ProtectedRoute allowed={['owner']}>
+            <ProtectedRoute allowed={["owner"]}>
               <CreateProductForm />
             </ProtectedRoute>
           }
         ></Route>
+        {/* Admin/Dashboard Route */}
         <Route
           path="dashboard"
           element={
-            <ProtectedRoute allowed={['owner']}>
+            <ProtectedRoute allowed={["owner"]}>
               <CreateProductForm />
             </ProtectedRoute>
           }
         ></Route>
+        {/* Admin/all products Route */}
         <Route
           path="allproducts"
           element={
-            <ProtectedRoute allowed={['owner']}>
-              <CreateProductForm />
+            <ProtectedRoute allowed={["owner"]}>
+              <AllProducts />
             </ProtectedRoute>
           }
         ></Route>
         <Route
           path="orders"
           element={
-            <ProtectedRoute allowed={['owner']}>
+            <ProtectedRoute allowed={["owner"]}>
               <CreateProductForm />
             </ProtectedRoute>
           }
@@ -90,13 +96,13 @@ const App = () => {
         <Route
           path="users"
           element={
-            <ProtectedRoute allowed={['owner']}>
+            <ProtectedRoute allowed={["owner"]}>
               <CreateProductForm />
             </ProtectedRoute>
           }
         ></Route>
       </Route>
-      <Route path="*" element={<Error />} allowed={['owner','user']}/>
+      <Route path="*" element={<Error />} allowed={["owner", "user"]} />
     </Routes>
   );
 };
