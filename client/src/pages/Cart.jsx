@@ -48,12 +48,12 @@ const Cart = () => {
         console.log(currentProduct);
         const price = currentProduct.product.price;
         const qty = currentProduct.qty;
-        const discount = currentProduct.product.discount;
+        const discountPrice = currentProduct.product.discountPrice;
 
         const totalAmount = price * qty;
-        const payableAmount = discount * qty;
+        const payableAmount = discountPrice * qty;
 
-        discount==0?acc.payablePrice += totalAmount : acc.payablePrice += payableAmount;
+        discountPrice==0?acc.payablePrice += totalAmount : acc.payablePrice += payableAmount;
 
         acc.totalPrice += totalAmount;
         return acc;
@@ -112,7 +112,7 @@ const Cart = () => {
                 <CartProductCard
                   key={index}
                   id={product.product._id}
-                  discount={product.product.discount}
+                  discountPrice={product.product.discountPrice}
                   frontImage={product.product.frontImage}
                   name={product.product.name}
                   price={product.product.price}

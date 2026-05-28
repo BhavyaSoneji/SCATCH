@@ -50,31 +50,28 @@ export const useHandleSubmit = () => {
           console.log(err.response?.data?.message || "Sign Up Failed..");
         });
     } else if (value.toLowerCase() == "Create Product".toLowerCase()) {
-      axios
-        .post("http://localhost:5000/products/create", data, {
+      try {
+        const resp = await axios.post("http://localhost:5000/products/create", data, {
           withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        })
-        .then((resp) => {
-          if (resp.data.status) {
-            notify.success("Product Created Successfully");
-            console.log(resp?.data?.message || "Product Created Sccessfully..");
-            return true;
-          } else {
-            notify.error("Error Creating Product");
-            console.log(resp?.data?.message || "Error Creating Product..");
-            return false;
-          }
-        })
-        .catch((err) => {
-          notify.error("Product Creation Failed");
-          console.log(
-            err.response?.data?.message || "Product Creation Failed.."
-          );
-          return false;
         });
+
+        if (resp.data.status) {
+          notify.success("Product Created Successfully");
+          console.log(resp?.data?.message || "Product Created Sccessfully..");
+          return resp.data.product;
+        }
+
+        notify.error("Error Creating Product");
+        console.log(resp?.data?.message || "Error Creating Product..");
+        return false;
+      } catch (err) {
+        notify.error("Product Creation Failed");
+        console.log(err.response?.data?.message || "Product Creation Failed..");
+        return false;
+      }
     } else if (value.toLowerCase() == "Logout".toLowerCase()) {
       axios
         .get("http://localhost:5000/users/logout", {

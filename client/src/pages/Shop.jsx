@@ -50,8 +50,8 @@ const Shop = () => {
     // Price range filter
     filtered = filtered.filter((product) => {
       const price =
-        product.discount && product.discount < product.price // if discount then check if discount < price then return discount otherwise
-          ? product.discount
+        product.discountPrice && product.discountPrice < product.price // if discount then check if discount < price then return discount otherwise
+          ? product.discountPrice
           : product.price;
       return price >= priceRange.min && price <= priceRange.max;
     });
@@ -68,7 +68,7 @@ const Shop = () => {
     // Sale filter
     if (onSaleOnly) {
       filtered = filtered.filter((product) => {
-        return product.discount > 0 && product.discount < product.price;
+        return product.discountPrice > 0 && product.discountPrice < product.price;
       });
     }
 
@@ -81,12 +81,12 @@ const Shop = () => {
     switch (sortBy) {
       case "price-low":
         sorted.sort(
-          (a, b) => (a.discount || a.price) - (b.discount || b.price)
+          (a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price)
         );
         break;
       case "price-high":
         sorted.sort(
-          (a, b) => (b.discount || b.price) - (a.discount || a.price)
+          (a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price)
         );
         break;
       case "name":
@@ -327,9 +327,9 @@ const Shop = () => {
                       frontImage={product.frontImage}
                       name={product.name}
                       price={product.price}
-                      discount={product.discount}
+                      discountPrice={product.discountPrice}
                       showSale={
-                        product.discount > 0 && product.discount < product.price
+                        product.discountPrice > 0 && product.discountPrice < product.price
                       }
                       id={product._id}
                     />

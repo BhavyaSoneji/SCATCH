@@ -100,9 +100,9 @@ const Dashboard = () => {
                   frontImage={product.frontImage}
                   name={product.name}
                   price={product.price}
-                  discount={product.discount}
+                  discountPrice={product.discountPrice}
                   showSale={
-                    product.discount > 0 && product.discount < product.price
+                    product.discountPrice > 0 && product.discountPrice < product.price
                   }
                   key={product._id}
                 />

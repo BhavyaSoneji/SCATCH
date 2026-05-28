@@ -4,14 +4,15 @@ import Button from "../components/Button";
 import { useHandleSubmit } from "../utils/handleSubmit";
 import { X } from "lucide-react";
 import { useRef } from "react";
-
+import { useNavigate } from "react-router";
+import useAllProducts from "../context/useAllProducts";
 const CreateProductForm = () => {
   const defaultProduct = {
     frontImage: null,
     otherImages: [],
     name: "",
     price: "",
-    discount: "",
+    discountPrice: "",
     bgColor: "#ffffff",
     panelColor: "#000000",
     textColor: "#000000",
@@ -19,21 +20,25 @@ const CreateProductForm = () => {
   const [product, setProduct] = useState(defaultProduct);
   const [frontImagePreview, setFrontImagePreview] = useState(null);
   const [multipleImagesPreview, setMultipleImagesPreview] = useState([]);
-  const [isSuccess, setIsSuccess] = useState();
 
   const handleSubmit = useHandleSubmit();
+  const frontImageRef = useRef(null);
+  const otherImagesRef = useRef(null);
 
-  const frontImage = useRef(null);
+  const navigate = useNavigate();
+
+  const { addProduct } = useAllProducts();
 
   const handleMultipleImagesChange = async (e) => {
     const files = Array.from(e.target.files);
-
     setProduct({ ...product, otherImages: files });
 
+    // Cleanup old Previews
     multipleImagesPreview.forEach((url) => {
       return URL.revokeObjectURL(url);
     });
 
+    // Created New URLs fro files
     const previreImages = files.map((file) => {
       return URL.createObjectURL(file);
     });
@@ -42,20 +47,15 @@ const CreateProductForm = () => {
 
   const handleFrontImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      // Revoke previous URL if exists
-      if (frontImagePreview) {
-        URL.revokeObjectURL(frontImagePreview);
-      }
-      // Create new preview URL
-      const previewUrl = URL.createObjectURL(file);
-      setFrontImagePreview(previewUrl);
-      setProduct({
-        ...product,
-        frontImage: file,
-      });
-      // frontImage.current.value = file;
+    if (!file) return;
+
+    // Cleanup old preview
+    if (frontImagePreview) {
+      URL.revokeObjectURL(frontImagePreview);
     }
+
+    setFrontImagePreview(URL.createObjectURL(file));
+    setProduct({ ...product, frontImage: file });
   };
 
   const removeFrontImage = () => {
@@ -63,38 +63,73 @@ const CreateProductForm = () => {
       URL.revokeObjectURL(frontImagePreview);
     }
 
-    console.log(document.getElementsByTagName(""));
     setFrontImagePreview(null);
     setProduct({ ...product, frontImage: null });
-    frontImage.current.value = null;
-
+    if (frontImageRef.current) {
+      frontImageRef.current.value = "";
+    }
   };
 
   const removeFromMultipleImages = (url, index) => {
-    URL.revokeObjectURL(multipleImagesPreview[index]);
-    const newPrivews = multipleImagesPreview.filter((value) => {
-      return value != url;
+    URL.revokeObjectURL(url);
+    setMultipleImagesPreview((prev) => {
+      return prev.filter((_, i) => i !== index);
     });
 
-    setMultipleImagesPreview(newPrivews);
-    const otherImages = product.otherImages.filter((_, i) => {
-      return i !== index;
+    setProduct({
+      ...product,
+      otherImages: product.otherImages.filter((_, i) => i !== index),
     });
 
-    setProduct({ ...product, otherImages });
+    console.log(product);
   };
 
   useEffect(() => {
-    if (isSuccess === true) {
-      // Reset product data
-      setProduct(defaultProduct);
-      setFrontImagePreview(null);
-      setMultipleImagesPreview([]);
-    
-      // Reset success flag
-      setIsSuccess(null);
+    if (multipleImagesPreview.length == 0) {
+      otherImagesRef.current.value = "";
     }
-  }, [isSuccess]);
+  }, [multipleImagesPreview]);
+
+  // Reset Form Helper
+  const resetForm = () => {
+    // cleanup all the preview URLs
+    if (frontImagePreview) {
+      URL.revokeObjectURL(frontImagePreview);
+    }
+    multipleImagesPreview.forEach((url) => {
+      URL.revokeObjectURL(url);
+    });
+
+    // Reset State
+    setProduct(defaultProduct);
+    setFrontImagePreview(null);
+    setMultipleImagesPreview([]);
+
+    // Reset File Inputs
+    if (frontImageRef.current) {
+      frontImageRef.current.value = "";
+    }
+    if (otherImagesRef.current) {
+      otherImagesRef.current.value = "";
+    }
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const createProduct = await handleSubmit(e,product,"Create Product");
+      
+      if(createProduct){
+        addProduct(createProduct);
+      }
+      resetForm();
+    } catch (err) {
+      console.error("Error Creating Product", err);
+    }finally{
+      navigate("/admin/allproducts");
+    }
+  };
 
   return (
     <div className="h-full w-full flex flex-col p-10 gap-4">
@@ -103,9 +138,8 @@ const CreateProductForm = () => {
       <form
         className="flex flex-col justify-between gap-10 p-10"
         encType="multipart/form-data"
-        onSubmit={async (e) => {
-          await handleSubmit(e, product, "Create Product");
-          setIsSuccess(true);
+        onSubmit={(e) => {
+          onSubmit(e);
         }}
       >
         {/* Create Product form */}
@@ -137,14 +171,14 @@ const CreateProductForm = () => {
                     </button>
                   </div>
                 )}
-
+                {/* Front Image Input Box */}
                 <input
                   className="w-full px-4 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                   type="file"
                   name="frontImage"
                   accept="image/*"
                   onChange={handleFrontImageChange}
-                  ref={frontImage}
+                  ref={frontImageRef}
                   required
                 />
               </div>
@@ -188,6 +222,7 @@ const CreateProductForm = () => {
                   name="otherImages"
                   accept="image/*"
                   onChange={(e) => handleMultipleImagesChange(e)}
+                  ref={otherImagesRef}
                 />
               </div>
 
@@ -213,7 +248,7 @@ const CreateProductForm = () => {
                   setData={setProduct}
                   title="Discount Price"
                   type={"number"}
-                  name={"discount"}
+                  name={"discountPrice"}
                   placeholder="Enter Discount Price"
                 ></InputBox>
               </div>

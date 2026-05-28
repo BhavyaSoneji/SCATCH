@@ -6,7 +6,7 @@ const CartProductCard = ({
   id,
   name,
   price,
-  discount,
+  discountPrice,
   frontImage,
   qty
 }) => {
@@ -16,13 +16,13 @@ const CartProductCard = ({
 
   useEffect(()=>{
     const setNewPrice = ()=>{
-      if(discount>0)
-        setFinalPrice(discount*quantity);
+      if(discountPrice>0)
+        setFinalPrice(discountPrice*quantity);
       else
         setFinalPrice(price*quantity);
     }
     setNewPrice();
-  },[quantity,price,discount]);
+  },[quantity,price,discountPrice]);
 
   const handleQtyInc = () => {
     if (quantity < 10) setQuantity((prev)=>prev+1);
@@ -49,10 +49,10 @@ const CartProductCard = ({
             {name}
           </h1>
           <div className="flex gap-3 items-center">
-            {discount > 0 ? (
+            {discountPrice > 0 ? (
               <>
                 <h2 className="text-lg font-bold ">
-                  ₹{discount}
+                  ₹{discountPrice}
                 </h2>
                 <h2 className="text-md font-medium text-zinc-400 line-through">₹{price}</h2>
               </>

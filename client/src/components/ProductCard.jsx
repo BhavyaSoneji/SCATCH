@@ -7,7 +7,7 @@ const ProductCard = ({
   frontImage,
   name,
   price,
-  discount,
+  discountPrice,
   bgColor = "#ffffff",
   showSale = false,
 }) => {
@@ -32,7 +32,7 @@ const ProductCard = ({
       }}
     >
       {/* Sale Badge */}
-      {showSale && discount && discount < price && (
+      {showSale && discountPrice && discountPrice < price && (
         <div className="absolute top-4 right-4 bg-zinc-900 text-white px-3 py-1 text-xs font-medium uppercase tracking-wider">
           Sale
         </div>
@@ -56,9 +56,9 @@ const ProductCard = ({
 
           {/* Price Section */}
           <div className="flex items-center gap-3">
-            {discount && discount < price ? (
+            {discountPrice && discountPrice < price ? (
               <>
-                <span className="text-sm font-semibold">₹ {discount}</span>
+                <span className="text-sm font-semibold">₹ {discountPrice}</span>
                 <span className="text-xs line-through opacity-60">
                   ₹ {price}
                 </span>

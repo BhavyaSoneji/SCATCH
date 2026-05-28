@@ -1,28 +1,45 @@
 import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
-
-const ProductContext = createContext();
+import React, { useCallback, useEffect, useState } from "react";
+import notify from "../utils/notifications";
+import ProductContext from "./ProductContextObject";
 
 export const AllProductsProvider = ({ children }) => {
   const [allProducts, setAllProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
+      setIsError(false);
+
       try {
-        setIsLoading(true);
-        const resp = await axios.get("http://localhost:5000/products/allproducts", {
-          withCredentials: true,
-        });
-        // backend returns { status: true, products: [...] }
+        const resp = await axios.get(
+          "http://localhost:5000/products/allproducts",
+          {
+            withCredentials: true,
+          },
+        );
         setAllProducts(resp.data?.products || []);
       } catch (err) {
+        setIsError(true);
+        setAllProducts([]);
+        notify.error("Failed to load products");
         console.error("Failed to load products:", err);
       } finally {
         setIsLoading(false);
       }
     };
+
     loadData();
+  }, []);
+
+  const addProduct = useCallback((newProduct) => {
+    setAllProducts((prev) => [...prev, newProduct]);
+  }, []);
+
+  const removeProduct = useCallback((id) => {
+    setAllProducts((prev) => prev.filter((p) => p._id !== id));
   }, []);
 
   return (
@@ -31,13 +48,12 @@ export const AllProductsProvider = ({ children }) => {
         allProducts,
         setAllProducts,
         isLoading,
+        isError,
+        addProduct,
+        removeProduct,
       }}
     >
       {children}
     </ProductContext.Provider>
   );
-};
-
-export const useAllProducts = () => {
-  return useContext(ProductContext);
 };
