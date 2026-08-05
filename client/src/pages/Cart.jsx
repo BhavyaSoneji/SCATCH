@@ -21,8 +21,6 @@ const Cart = () => {
     };
     setDefault();
 
-    console.log(cart);
-
   }, []);
 
   useEffect(() => {

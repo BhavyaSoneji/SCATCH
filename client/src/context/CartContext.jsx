@@ -9,7 +9,7 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const fetchCart = async () => {
     try{
         const resp = await axios.get('http://localhost:5000/users/userwithcart',{

@@ -2,25 +2,25 @@ import React from "react";
 import { UseCart } from "../context/cartContext";
 import { useNavigate } from "react-router";
 
-const ProductCard = ({
-  id,
-  frontImage,
-  name,
-  price,
-  discountPrice,
-  bgColor = "#ffffff",
-  showSale = false,
-}) => {
+const ProductCard = ({ product, bgColor = "#ffffff" }) => {
   const { addToCart } = UseCart();
-
-  const handleAddToCart = (id) => {
-    addToCart(id);
-  };
-
   const navigate = useNavigate();
 
-  const handleShowProduct = (id) => {
-    navigate(`/product/${id}`);
+  if (!product) {
+    return null;
+  }
+
+  const {
+    _id,
+    frontImage,
+    name,
+    price,
+    discountPrice,
+    showSale = discountPrice > 0 && discountPrice < price,
+  } = product;
+
+  const handleAddToCart = () => {
+    addToCart(_id);
   };
 
   return (
@@ -28,7 +28,7 @@ const ProductCard = ({
       className="relative h-105 w-68 bg-white shrink-0"
       style={{ backgroundColor: bgColor }}
       onClick={() => {
-        handleShowProduct(id);
+        navigate(`/product/${_id}`);
       }}
     >
       {/* Sale Badge */}
@@ -71,9 +71,11 @@ const ProductCard = ({
 
         {/* Add to Bag Button */}
         <button
-          className=" mb-1 w-full text-xs uppercase tracking-wider font-medium shadow-md border-zinc-50 bg-zinc-50 py-3 rounded-md transition-all duration-300 hover:bg-zinc-900 hover:text-zinc-50"
-          onClick={() => {
-            handleAddToCart(id);
+          type="button"
+          className="mb-1 w-full text-xs uppercase tracking-wider font-medium shadow-md border-zinc-50 bg-zinc-50 py-3 rounded-md transition-all duration-300 hover:bg-zinc-900 hover:text-zinc-50"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAddToCart();
           }}
         >
           Add to Bag

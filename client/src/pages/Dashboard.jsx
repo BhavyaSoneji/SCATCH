@@ -7,23 +7,24 @@ import { useNavigate } from "react-router";
 import { CircleUserRound, Search } from "lucide-react";
 import { IoBagOutline } from "react-icons/io5";
 import { useAuth } from "../context/AuthContext";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Dashboard = () => {
   const [productsList, setProductsList] = useState([]);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const get10Products = async ()=>{
-    const tempProductsList = await getAllProducts() || [];
+  const get10Products = async () => {
+    const tempProductsList = (await getAllProducts()) || [];
     console.log(tempProductsList);
     setProductsList(tempProductsList);
-  }
+  };
 
-  const {user} = useAuth()
+  const {user} = useAuth();
 
   useEffect(() => {
-    const defaultproducts = ()=>{
+    const defaultproducts = () => {
       get10Products();
-    }
+    };
     defaultproducts();
   }, []);
 
@@ -39,8 +40,36 @@ const Dashboard = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
+
   const navigate = useNavigate();
+
+  const sliderImages = [
+    "UPLOADS/Slider1.webp",
+    "UPLOADS/Slider2.webp",
+    "UPLOADS/Slider3.webp",
+    "UPLOADS/Slider4.webp",
+    "UPLOADS/Slider5.webp",
+    "UPLOADS/Slider6.webp",
+    "UPLOADS/Slider7.webp",
+  ];
+  
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  });
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => prev == 0 ? sliderImages.length - 1 : prev-1);
+  };
 
   return (
     <div className="min-h-screen w-full bg-zinc-50 flex flex-col gap-10 rlative items-center">
@@ -52,29 +81,95 @@ const Dashboard = () => {
             : "bg-transparent w-full"
         }`}
       >
-        
         {/* OtherPages */}
         <div className="w-1/3 flex gap-7 uppercase tracking-tighter font-medium text-zinc-900">
-          <a className="cursor-pointer hover:opacity-60 transition-opacity" onClick={()=>navigate('/shop')}>Shop</a>
-          <a className="cursor-pointer hover:opacity-60 transition-opacity">Collections</a>
-          <a className="cursor-pointer hover:opacity-60 transition-opacity">About</a>
+          <a
+            className="cursor-pointer hover:opacity-60 transition-opacity"
+            onClick={() => navigate("/shop")}
+          >
+            Shop
+          </a>
+          <a className="cursor-pointer hover:opacity-60 transition-opacity">
+            Collections
+          </a>
+          <a className="cursor-pointer hover:opacity-60 transition-opacity">
+            About
+          </a>
         </div>
         <div className="w-1/3 justify-center flex">
-          <h1 className="font-bold text-4xl font-serif cursor-pointer" onClick={()=>navigate('/dashboard')}>Scatch</h1>
+          <h1
+            className="font-bold text-4xl font-serif cursor-pointer"
+            onClick={() => navigate("/dashboard")}
+          >
+            Scatch
+          </h1>
         </div>
         <div className="w-1/3 justify-end flex gap-7 uppercase tracking-tighter font-medium text-zinc-900">
           <Search className="cursor-pointer hover:opacity-60 transition-opacity" />
-          <CircleUserRound className="cursor-pointer hover:opacity-60 transition-opacity" onClick={()=>{navigate('/admin/createProduct')}} />
-          <IoBagOutline size={25} className="cursor-pointer hover:opacity-60 transition-opacity" onClick={()=>{navigate('/cart')}} />
+          <CircleUserRound
+            className="cursor-pointer hover:opacity-60 transition-opacity"
+            onClick={() => {
+              navigate("/admin/createProduct");
+            }}
+          />
+          <IoBagOutline
+            size={25}
+            className="cursor-pointer hover:opacity-60 transition-opacity"
+            onClick={() => {
+              navigate("/cart");
+            }}
+          />
         </div>
       </div>
 
       {/* Image Silder */}
-      <div className="max-h-screen overflow-hidden">
-        <img
-          className="object-cover"
-          src="https://www.louisvuitton.com/images/is/image/lv/W_BC_LG_ALMAMNG_STILL_OCT24_01_DI3.jpg?wid=2400"
-        ></img>
+      <div className="relative w-full h-screen overflow-hidden">
+        <div
+          className="flex h-full transition-transform duration-700 ease-in-out"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
+          {sliderImages.map((image, index) => {
+            return (
+              <img
+                key={index}
+                src={image}
+                alt={`Slider Image ${index + 1}`}
+                className="min-w-full h-full object-cover"
+              ></img>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Left Button */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur-md p-3 rounded-full hover:bg-white/50 transition"
+      >
+        <ChevronLeft size={30} />
+      </button>
+
+      {/* Right Button */}
+      <button
+        onClick={nextSlide}
+        className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur-md p-3 rounded-full hover:bg-white/50 transition"
+      >
+        <ChevronRight size={30} />
+      </button>
+
+      {/* Bottom Dots */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
+        {sliderImages.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`transition-all duration-300 rounded-full ${
+              currentSlide === index
+                ? "w-8 h-2 bg-white"
+                : "w-2 h-2 bg-white/50"
+            }`}
+          />
+        ))}
       </div>
 
       {/* Shoe Collection Section */}
@@ -85,7 +180,10 @@ const Dashboard = () => {
             <h1 className="text-3xl font-serif tracking-wide">
               Shoe Collection
             </h1>
-            <a className="text-sm uppercase tracking-wider hover:underline cursor-pointer" onClick={()=>navigate('/shop')}>
+            <a
+              className="text-sm uppercase tracking-wider hover:underline cursor-pointer"
+              onClick={() => navigate("/shop")}
+            >
               VIEW ALL
             </a>
           </div>
@@ -93,23 +191,11 @@ const Dashboard = () => {
 
         {/* Products Grid */}
         <div className="h-full gap-5 w-full flex overflow-x-scroll products-container">
-          {productsList.map((product,index)=>{
-            if(index<=7){
-              return (
-                <ProductCard
-                  frontImage={product.frontImage}
-                  name={product.name}
-                  price={product.price}
-                  discountPrice={product.discountPrice}
-                  showSale={
-                    product.discountPrice > 0 && product.discountPrice < product.price
-                  }
-                  key={product._id}
-                />
-              )
+          {productsList.map((product, index) => {
+            if (index <= 7) {
+              return <ProductCard product={product} key={product._id} />;
             }
-            }
-          )}
+          })}
         </div>
       </div>
 
@@ -133,7 +219,10 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <button onClick={()=>navigate('/shop')} className="group mt-4 flex items-center gap-3 text-zinc-900 font-medium uppercase tracking-wider text-sm hover:gap-5 transition-all duration-300">
+            <button
+              onClick={() => navigate("/shop")}
+              className="group mt-4 flex items-center gap-3 text-zinc-900 font-medium uppercase tracking-wider text-sm hover:gap-5 transition-all duration-300"
+            >
               Explore Collection
               <svg
                 className="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
@@ -265,7 +354,10 @@ const Dashboard = () => {
 
           {/* Call to Action */}
           <div className="mt-8 text-center">
-            <button onClick={()=>navigate('/shop')} className="bg-zinc-900 text-white px-8 py-3 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-zinc-800 transform hover:scale-105 transition-all duration-300 shadow-lg">
+            <button
+              onClick={() => navigate("/shop")}
+              className="bg-zinc-900 text-white px-8 py-3 rounded-full font-semibold text-sm uppercase tracking-wider hover:bg-zinc-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
+            >
               Explore Men's Collection
             </button>
           </div>

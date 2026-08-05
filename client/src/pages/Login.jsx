@@ -171,6 +171,9 @@ export const Login = () => {
           <img
             className="h-full w-full object-cover rounded-lg"
             src="https://in.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-keepall-50--M26131_PM1_Worn%20view.png?wid=1090&hei=1090"
+            onError={(e)=>{
+              e.target.src = "../../public/UPLOADS/login_image.avif"
+            }}
           ></img>
         </div>
       </div>

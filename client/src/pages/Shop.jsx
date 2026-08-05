@@ -30,7 +30,7 @@ const Shop = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  };  
 
   useEffect(() => {
     fetchAllProducts();
@@ -324,14 +324,7 @@ const Shop = () => {
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <ProductCard
-                      frontImage={product.frontImage}
-                      name={product.name}
-                      price={product.price}
-                      discountPrice={product.discountPrice}
-                      showSale={
-                        product.discountPrice > 0 && product.discountPrice < product.price
-                      }
-                      id={product._id}
+                      product={product}
                     />
                   </div>
                 ))}

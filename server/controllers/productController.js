@@ -1,4 +1,5 @@
 const productModel = require("../models/product-model");
+const userModel = require("../models/user-model");
 const mongoose = require("mongoose");
 
 const createProduct = async (req, resp) => {
@@ -61,20 +62,27 @@ const fetchProduct = async (req, resp) => {
 const deleteProduct = async (req, resp) => {
   try {
     const productId = req.params.id;
+
+    // Step 1: Delete the product
     const responce = await productModel.deleteOne({ _id: productId });
-    if (responce.acknowledged) {
-      resp
-        .status(200)
-        .send({
-          status: "true",
-          message: "Product Deleted Successfully..",
-          deletedProductID: `${productId}`,
-        });
-    } else {
-      resp
+    if (!responce.deleteCount) {
+      return resp
         .status(404)
-        .send({ status: "false", message: "Product Not Found.." });
+        .send({ status: false, message: "Product Not Found.." });
     }
+    // Step 2: Remove from ALL users' carts atomically (cascade delete)
+    // updateMany hits all users in one DB round-trip — very efficient
+    await userModel.updateMany(
+      { "cart.product": productId },
+      { $pull: { cart: { product: productId } } },
+    );
+
+    // Send Successfull Responce
+    resp.status(200).send({
+      status: true,
+      message: "Product deleted and removed from all carts",
+      deletedProductID: productId,
+    });
   } catch (err) {
     resp
       .status(500)

@@ -167,7 +167,7 @@ const addToCart = async (req, resp) => {
     if (!user) {
       return resp.status(404).send({
         status: false,
-        message: "User not found",
+        message: "hii User not found",
       });
     }
 
@@ -205,38 +205,64 @@ const addToCart = async (req, resp) => {
 
 const fetchUserWithCart = async (req, resp) => {
   try {
-  const user = await userModel
-    .findOne({ _id: req.id })
-    .populate("cart.product")
-    .lean();
+    const user = await userModel
+      .findOne({ _id: req.id })
+      .populate({
+        path: "cart.product",
+        // If product is deleted, populate results null - we handle that below
+        // Some teams add 'match:{ _id: { $exists : true } }' but filtering the null is cleaner
+      })
+      .lean();
 
-  if (!user) {
-    return resp.status(404).send({
-      status: false,
-      message: "User not found",
+    if (!user) {
+      return resp.status(404).send({
+        status: false,
+        message: "User not found..",
+      });
+    }
+
+    // ── LAYER 1: Separate valid vs stale cart items ──────────────────────────
+    const validCartItems = user.cart.filter((item) => item.product !== null);
+    const staleProducts = user.cart
+      .filter((item) => item.product === null)
+      .map((item) => item._id);
+
+    // ── LAYER 2: Auto-clean stale references from DB (fire-and-forget) ───────
+    // Don't await — don't block the response for cleanup
+    if (staleProducts.length > 0) {
+      userModel
+        .updateOne({ _id: req.id }, { $pull: { cart: { product: null } } })
+        .exec()
+        .catch((err) => console.error("Cart cleanup failed:", err));
+    }
+
+    // ── LAYER 3: Build safe response ─────────────────────────────────────────
+    const cartWithImages = validCartItems.map((item) => ({
+      product: {
+        ...item.product,
+        frontImage: item.product.frontImage
+          ? `data:image/png;base64,${item.product.frontImage.toString("base64")}`
+          : null,
+      },
+      qty: item.qty,
+    }));
+
+    // Handle profilePic safely too
+    const profilePic =
+      user.profilePic && Buffer.isBuffer(user.profilePic)
+        ? `data:image/png;base64,${user.profilePic.toString("base64")}`
+        : (user.profilePic ?? null);
+
+    const { cart, ...userWithoutCart } = user;
+
+    resp.status(200).send({
+      status: true,
+      message: "User with Cart fetched successfully..",
+      user: { ...userWithoutCart, profilePic },
+      cart: cartWithImages,
     });
-  }
-
-  user.profilePic = `data:image/png;base64,${user.profilePic.toString("base64")}`;
-
-  const cartWithImages = user.cart.map((item) => ({
-    product:{...item.product,
-      frontImage:item.product.frontImage
-      ?`data:image/png;base64,${item.product.frontImage.toString('base64')}`
-      :null
-    },
-    qty:item.qty
-  }));
-
-  const { cart, ...userWithoutCart } = user;
-
-  resp.status(201).send({
-    status: true,
-    Message: "User With Cart Fetched Successfully",
-    user: userWithoutCart,
-    cart: cartWithImages,
-  });
   } catch (err) {
+    console.error("fetchUserWithCart error:", err);
     resp
       .status(500)
       .send({ status: false, message: "Error fetching the User With Cart" });
@@ -282,9 +308,7 @@ const updateUser = async (req, resp) => {
       },
     );
     if (!newUser) {
-      resp
-        .status(404)
-        .send({ status: false, message: "User Not Found.." });
+      resp.status(404).send({ status: false, message: "2  User Not Found.." });
     } else {
       resp.status(200).send({
         status: true,
