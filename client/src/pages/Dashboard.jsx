@@ -7,9 +7,15 @@ import { useNavigate } from "react-router";
 import { CircleUserRound, Search } from "lucide-react";
 import { IoBagOutline } from "react-icons/io5";
 import { useAuth } from "../context/AuthContext";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import ImageCarousel from "../components/ImageCarousel";
+
+
+
 
 const Dashboard = () => {
+
+  const {user} = useAuth();
+
   const [productsList, setProductsList] = useState([]);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -18,8 +24,6 @@ const Dashboard = () => {
     console.log(tempProductsList);
     setProductsList(tempProductsList);
   };
-
-  const {user} = useAuth();
 
   useEffect(() => {
     const defaultproducts = () => {
@@ -44,32 +48,14 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const sliderImages = [
-    "UPLOADS/Slider1.webp",
-    "UPLOADS/Slider2.webp",
-    "UPLOADS/Slider3.webp",
-    "UPLOADS/Slider4.webp",
-    "UPLOADS/Slider5.webp",
-    "UPLOADS/Slider6.webp",
-    "UPLOADS/Slider7.webp",
+    "/UPLOADS/Slider1.webp",
+    "/UPLOADS/Slider2.webp",
+    "/UPLOADS/Slider3.webp",
+    "/UPLOADS/Slider4.webp",
+    "/UPLOADS/Slider5.webp",
+    "/UPLOADS/Slider6.webp",
+    "/UPLOADS/Slider7.webp",
   ];
-  
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  });
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => prev == 0 ? sliderImages.length - 1 : prev-1);
-  };
 
   return (
     <div className="min-h-screen w-full bg-zinc-50 flex flex-col gap-10 rlative items-center">
@@ -122,54 +108,9 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Image Silder */}
+      {/* Image Slider */}
       <div className="relative w-full h-screen overflow-hidden">
-        <div
-          className="flex h-full transition-transform duration-700 ease-in-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          {sliderImages.map((image, index) => {
-            return (
-              <img
-                key={index}
-                src={image}
-                alt={`Slider Image ${index + 1}`}
-                className="min-w-full h-full object-cover"
-              ></img>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Left Button */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur-md p-3 rounded-full hover:bg-white/50 transition"
-      >
-        <ChevronLeft size={30} />
-      </button>
-
-      {/* Right Button */}
-      <button
-        onClick={nextSlide}
-        className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur-md p-3 rounded-full hover:bg-white/50 transition"
-      >
-        <ChevronRight size={30} />
-      </button>
-
-      {/* Bottom Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
-        {sliderImages.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`transition-all duration-300 rounded-full ${
-              currentSlide === index
-                ? "w-8 h-2 bg-white"
-                : "w-2 h-2 bg-white/50"
-            }`}
-          />
-        ))}
+        <ImageCarousel images={sliderImages} className="w-full h-full" />
       </div>
 
       {/* Shoe Collection Section */}
