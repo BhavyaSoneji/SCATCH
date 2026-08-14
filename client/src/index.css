@@ -9,3 +9,13 @@ table tbody tr img{
 table tbody tr:hover img{
     transform: scale(1.03);
 }
+
+/* Change color, size, and shape */
+.swiper-button-next,
+.swiper-button-prev {
+    display: none;
+}
+
+:root  {
+    --swiper-theme-color: rgb(57, 57, 57) !important;
+}
